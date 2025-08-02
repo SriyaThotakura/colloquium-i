@@ -1,0 +1,1902 @@
+                atmosphere: {
+                    oxygen: 0.4,
+                    methane: 0.8,
+                    pressure: 0.05,
+                    wind: 3,
+                    radiation: 'Very High'
+                },
+                features: ['ice-field', 'water-geyser', 'volcanic-vent'],
+                effects: ['ice-crystal', 'water-geyser'],
+                hazards: { radiation: true, extreme_cold: true },
+                bonuses: { fragment: 1.5, rare_materials: 1.8 }
+            }
+        ];
+
+        // DOM Elements
+        const gameContainer = document.getElementById('gameContainer');
+        const probe = document.getElementById('playerProbe');
+        const cursor = document.getElementById('customCursor');
+        const canvas = document.getElementById('backgroundCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Setup canvas
+        function setupCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        setupCanvas();
+
+        // Utility Functions
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function distance(x1, y1, x2, y2) {
+            return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+        }
+
+        function clamp(value, min, max) {
+            return Math.min(Math.max(value, min), max);
+        }
+
+        // Planetary Feature Creation
+        function createPlanetaryFeature(type, x, y) {
+            const feature = document.createElement('div');
+            feature.className = `planetary-feature ${type}`;
+            feature.style.left = x + 'px';
+            feature.style.top = y + 'px';
+            
+            feature.addEventListener('click', (e) => {
+                e.stopPropagation();
+                interactWithFeature(feature, type, x, y);
+            });
+            
+            gameContainer.appendChild(feature);
+            game.planetaryFeatures.push({ element: feature, type, x, y, explored: false });
+        }
+
+        function interactWithFeature(feature, type, x, y) {
+            const featureData = game.planetaryFeatures.find(f => f.element === feature);
+            if (featureData.explored) return;
+            
+            featureData.explored = true;
+            game.featuresExplored++;
+            
+            // Different interactions based on feature type
+            switch(type) {
+                case 'methane-lake':
+                    game.energy = Math.min(100, game.energy + 20);
+                    game.atmosphere = Math.min(100, game.atmosphere + 15);
+                    showNotification('Methane Lake: Energy systems recharged from hydrocarbon absorption');
+                    createParticleExplosion(x, y, '#ffa500', 15);
+                    break;
+                    
+                case 'ice-field':
+                    game.health = Math.min(100, game.health + 15);
+                    game.sync = Math.min(100, game.sync + 10);
+                    showNotification('Ice Field: Water detected - life support systems stabilized');
+                    createParticleExplosion(x, y, '#74c0fc', 12);
+                    spawnCollectible(); // Ice fields often contain frozen specimens
+                    break;
+                    
+                case 'volcanic-vent':
+                    game.score += 200;
+                    game.atmosphere = Math.max(0, game.atmosphere - 10);
+                    showNotification('Volcanic Vent: Rare minerals detected - atmospheric contamination rising');
+                    createParticleExplosion(x, y, '#ff8787', 20);
+                    // 50% chance to spawn rare powerup
+                    if (Math.random() > 0.5) {
+                        setTimeout(() => createPowerup('score'), 1000);
+                    }
+                    break;
+                    
+                case 'water-geyser':
+                    game.health = Math.min(100, game.health + 25);
+                    game.energy = Math.min(100, game.energy + 15);
+                    showNotification('Water Geyser: Pristine H2O - all systems refreshed');
+                    createParticleExplosion(x, y, '#74c0fc', 18);
+                    break;
+            }
+            
+            feature.style.opacity = '0.5';
+            feature.style.transform = 'scale(0.8)';
+            updateHUD();
+        }
+
+        // Environmental Effects System
+        function createEnvironmentalEffect(type) {
+            const effect = document.createElement('div');
+            effect.className = `environmental-effect ${type}`;
+            
+            // Position based on effect type
+            switch(type) {
+                case 'wind-stream':
+                    effect.style.left = '-100px';
+                    effect.style.top = random(100, window.innerHeight - 100) + 'px';
+                    break;
+                case 'ice-crystal':
+                    effect.style.left = random(0, window.innerWidth) + 'px';
+                    effect.style.top = '-20px';
+                    break;
+                case 'dust-storm':
+                    effect.style.left = random(0, window.innerWidth - 40) + 'px';
+                    effect.style.top = random(100, window.innerHeight - 100) + 'px';
+                    break;
+                case 'water-geyser':
+                    effect.style.left = random(100, window.innerWidth - 100) + 'px';
+                    effect.style.bottom = '0px';
+                    break;
+            }
+            
+            gameContainer.appendChild(effect);
+            game.environmentalEffects.push({ element: effect, type });
+            
+            // Remove after animation with error checking
+            const removeTime = type === 'dust-storm' ? 8000 : 
+                              type === 'wind-stream' ? 4000 : 6000;
+            
+            setTimeout(() => {
+                try {
+                    if (gameContainer.contains(effect)) {
+                        gameContainer.removeChild(effect);
+                    }
+                    game.environmentalEffects = game.environmentalEffects.filter(e => e.element !== effect);
+                } catch (error) {
+                    console.log('Effect cleanup error:', error);
+                }
+            }, removeTime);
+        }
+
+        // Enhanced Game Object Creation
+        function spawnCollectible() {
+            const x = random(60, window.innerWidth - 60);
+            const y = random(120, window.innerHeight - 120);
+            
+            const collectible = document.createElement('div');
+            collectible.className = 'collectible';
+            collectible.innerHTML = '<div class="collectible-glow"></div>';
+            collectible.style.left = x + 'px';
+            collectible.style.top = y + 'px';
+            
+            collectible.addEventListener('click', (e) => {
+                e.stopPropagation();
+                collectFragment(collectible, x, y);
+            });
+            
+            gameContainer.appendChild(collectible);
+            game.collectibles.push({ element: collectible, x, y });
+        }
+
+        // Enhanced planet switching with environmental setup
+        function switchPlanet() {
+            // Clear existing planetary elements
+            clearPlanetaryElements();
+            
+            game.currentPlanet = (game.currentPlanet + 1) % planets.length;
+            const planet = planets[game.currentPlanet];
+            
+            // Create transition effect
+            const transition = document.createElement('div');
+            transition.className = 'planet-transition';
+            gameContainer.appendChild(transition);
+            
+            setTimeout(() => {
+                if (gameContainer.contains(transition)) {
+                    gameContainer.removeChild(transition);
+                }
+            }, 2000);
+            
+            game.planetsVisited = Math.max(game.planetsVisited, game.currentPlanet + 1);
+            updatePlanet();
+            setupPlanetEnvironment(planet);
+            showNotification(`Entering ${planet.name} Orbit - Adapting to planetary conditions`);
+            
+            // Planetary arrival bonus
+            game.score += 100;
+            updateHUD();
+        }
+
+        function clearPlanetaryElements() {
+            // Clear intervals
+            if (game.planetIntervals) {
+                game.planetIntervals.forEach(intervalId => clearInterval(intervalId));
+                game.planetIntervals = [];
+            }
+            
+            // Remove all planetary features
+            game.planetaryFeatures.forEach(feature => {
+                if (gameContainer.contains(feature.element)) {
+                    gameContainer.removeChild(feature.element);
+                }
+            });
+            game.planetaryFeatures = [];
+            
+            // Remove environmental effects
+            game.environmentalEffects.forEach(effect => {
+                if (gameContainer.contains(effect.element)) {
+                    gameContainer.removeChild(effect.element);
+                }
+            });
+            game.environmentalEffects = [];
+        }
+
+        function setupPlanetEnvironment(planet) {
+            // Create planetary features
+            planet.features.forEach(featureType => {
+                const count = featureType === 'ice-field' ? 2 : 1;
+                for (let i = 0; i < count; i++) {
+                    const x = random(100, window.innerWidth - 100);
+                    const y = random(150, window.innerHeight - 150);
+                    createPlanetaryFeature(featureType, x, y);
+                }
+            });
+            
+            // Start environmental effects with intervals stored for cleanup
+            planet.effects.forEach(effectType => {
+                if (effectType !== 'water-geyser') { // Geysers are created as features
+                    const intervalTime = effectType === 'wind-stream' ? 3000 : 
+                                       effectType === 'ice-crystal' ? 2000 : 5000;
+                    
+                    const intervalId = setInterval(() => {
+                        if (game.isPlaying && !game.isPaused && Math.random() > 0.7) {
+                            createEnvironmentalEffect(effectType);
+                        }
+                    }, intervalTime);
+                    
+                    // Store interval ID for cleanup
+                    if (!game.planetIntervals) game.planetIntervals = [];
+                    game.planetIntervals.push(intervalId);
+                }
+            });
+            
+            // Apply atmospheric effects to probe
+            applyAtmosphericEffects(planet);
+        }
+
+        function applyAtmosphericEffects(planet) {
+            // Modify game mechanics based on planet
+            if (planet.hazards.cold) {
+                game.atmosphere = Math.max(0, game.atmosphere - 5);
+            }
+            if (planet.hazards.radiation) {
+                game.health = Math.max(0, game.health - 3);
+            }
+            if (planet.hazards.dust) {
+                game.sync = Math.max(0, game.sync - 2);
+            }
+            
+            // Apply bonuses
+            if (planet.bonuses.energy > 1) {
+                game.energy = Math.min(100, game.energy * planet.bonuses.energy * 0.1 + game.energy);
+            }
+        }
+
+        function updateAtmosphericReadings() {
+            const planet = planets[game.currentPlanet];
+            const readings = planet.atmosphere;
+            
+            document.getElementById('oxygenLevel').textContent = readings.oxygen + '%';
+            document.getElementById('methaneLevel').textContent = readings.methane + '%';
+            document.getElementById('pressureLevel').textContent = readings.pressure + ' atm';
+            document.getElementById('windSpeed').textContent = readings.wind + ' m/s';
+            document.getElementById('radiationLevel').textContent = readings.radiation;
+        }
+
+        function collectFragment(collectible, x, y) {
+            const planet = planets[game.currentPlanet];
+            const bonus = planet.bonuses.fragment || 1.0;
+            const points = Math.floor(100 * bonus);
+            
+            game.fragmentsCollected++;
+            game.score += points;
+            
+            removeCollectible(collectible);
+            createParticleExplosion(x, y, '#74c0fc', 12);
+            createRipple(x, y);
+            showNotification(`Archive Fragment Acquired (+${points} points)`);
+            
+            updateHUD();
+            
+            // Spawn new collectible after delay
+            setTimeout(spawnCollectible, 4000);
+        }
+
+        function createEnemy() {
+            const x = random(120, window.innerWidth - 120);
+            const y = random(180, window.innerHeight - 180);
+            
+            const enemy = document.createElement('div');
+            enemy.className = 'enemy';
+            enemy.innerHTML = '<div class="enemy-body"></div>';
+            enemy.style.left = x + 'px';
+            enemy.style.top = y + 'px';
+            
+            gameContainer.appendChild(enemy);
+            game.enemies.push({
+                element: enemy,
+                x, y,
+                vx: random(-1.2, 1.2),
+                vy: random(-1.2, 1.2),
+                centerX: x,
+                centerY: y,
+                angle: random(0, Math.PI * 2),
+                patrol: true,
+                planetAdapted: false
+            });
+        }
+
+        function createPowerup(type = null) {
+            const types = ['health', 'energy', 'sync', 'score', 'atmosphere'];
+            const powerType = type || types[Math.floor(Math.random() * types.length)];
+            
+            const x = random(60, window.innerWidth - 60);
+            const y = random(120, window.innerHeight - 120);
+            
+            const powerup = document.createElement('div');
+            powerup.className = 'powerup';
+            powerup.style.left = x + 'px';
+            powerup.style.top = y + 'px';
+            
+            let color, symbol;
+            switch(powerType) {
+                case 'health': color = '#ff8787'; symbol = '♥'; break;
+                case 'energy': color = '#74c0fc'; symbol = '⚡'; break;
+                case 'sync': color = '#b6bac5'; symbol = '◈'; break;
+                case 'score': color = '#d0d4dd'; symbol = '★'; break;
+                case 'atmosphere': color = '#40e0d0'; symbol = '🌪'; break;
+            }
+            
+            powerup.innerHTML = `<div style="
+                width: 100%; height: 100%; 
+                background: radial-gradient(circle, ${color} 50%, rgba(255,255,255,0.2) 80%, transparent 100%);
+                border-radius: 50%; 
+                box-shadow: 0 0 16px ${color}40, 0 0 32px ${color}20;
+                border: 1px solid ${color}60;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 14px; color: white; text-shadow: 0 0 8px currentColor;
+            ">${symbol}</div>`;
+            
+            powerup.addEventListener('click', (e) => {
+                e.stopPropagation();
+                collectPowerup(powerup, powerType, x, y);
+            });
+            
+            gameContainer.appendChild(powerup);
+            game.powerups.push({ element: powerup, type: powerType, x, y });
+            
+            setTimeout(() => {
+                removePowerup(powerup);
+            }, 18000);
+        }
+
+        function collectPowerup(powerup, type, x, y) {
+            switch(type) {
+                case 'health':
+                    game.health = Math.min(100, game.health + 25);
+                    showNotification('Repair Nanobots Activated');
+                    break;
+                case 'energy':
+                    game.energy = Math.min(100, game.energy + 30);
+                    showNotification('Energy Boost Acquired');
+                    break;
+                case 'sync':
+                    game.sync = Math.min(100, game.sync + 20);
+                    showNotification('Neural Sync Enhanced');
+                    break;
+                case 'score':
+                    game.score += 250;
+                    showNotification('Data Cache Discovered');
+                    break;
+                case 'atmosphere':
+                    game.atmosphere = Math.min(100, game.atmosphere + 30);
+                    showNotification('Atmospheric Filters Upgraded');
+                    break;
+            }
+            
+            removePowerup(powerup);
+            createParticleExplosion(x, y, type === 'health' ? '#ff8787' : 
+                                        type === 'energy' ? '#74c0fc' : 
+                                        type === 'sync' ? '#b6bac5' : 
+                                        type === 'atmosphere' ? '#40e0d0' : '#d0d4dd', 10);
+            createRipple(x, y);
+            updateHUD();
+        }
+
+        // Enhanced removal functions
+        function removePowerup(powerup) {
+            try {
+                if (gameContainer.contains(powerup)) {
+                    gameContainer.removeChild(powerup);
+                }
+                game.powerups = game.powerups.filter(p => p.element !== powerup);
+            } catch (error) {
+                console.log('Powerup removal error:', error);
+            }
+        }
+
+        function removeCollectible(collectible) {
+            try {
+                if (gameContainer.contains(collectible)) {
+                    gameContainer.removeChild(collectible);
+                }
+                game.collectibles = game.collectibles.filter(c => c.element !== collectible);
+            } catch (error) {
+                console.log('Collectible removal error:', error);
+            }
+        }
+
+        // Enhanced visual effects
+        function createParticleExplosion(x, y, color, count = 10) {
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.background = color;
+                particle.style.boxShadow = `0 0 8px ${color}`;
+                
+                const angle = (Math.PI * 2 * i) / count;
+                const speed = random(3, 7);
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed;
+                
+                gameContainer.appendChild(particle);
+                
+                let life = 1;
+                const animate = () => {
+                    const currentX = parseFloat(particle.style.left);
+                    const currentY = parseFloat(particle.style.top);
+                    
+                    particle.style.left = (currentX + vx) + 'px';
+                    particle.style.top = (currentY + vy) + 'px';
+                    particle.style.opacity = life;
+                    particle.style.transform = `scale(${life})`;
+                    
+                    life -= 0.04;
+                    
+                    if (life > 0) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        if (gameContainer.contains(particle)) {
+                            gameContainer.removeChild(particle);
+                        }
+                    }
+                };
+                animate();
+            }
+        }
+
+        function createRipple(x, y) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            gameContainer.appendChild(ripple);
+            
+            setTimeout(() => {
+                if (gameContainer.contains(ripple)) {
+                    gameContainer.removeChild(ripple);
+                }
+            }, 1200);
+        }
+
+        function addTrail() {
+            const trail = document.createElement('div');
+            trail.className = 'trail';
+            trail.style.left = game.playerX + 'px';
+            trail.style.top = game.playerY + 'px';
+            gameContainer.appendChild(trail);
+            
+            setTimeout(() => {
+                if (gameContainer.contains(trail)) {
+                    gameContainer.removeChild(trail);
+                }
+            }, 1200);
+        }
+
+        function showNotification(text) {
+            const notification = document.createElement('div');
+            notification.className = 'notification fade-in';
+            notification.textContent = text;
+            gameContainer.appendChild(notification);
+            
+            setTimeout(() => {
+                if (gameContainer.contains(notification)) {
+                    gameContainer.removeChild(notification);
+                }
+            }, 3000);
+        }
+
+        // Enhanced update functions
+        function updatePlayer() {
+            const dx = game.mouseX - game.playerX;
+            const dy = game.mouseY - game.playerY;
+            const dist = distance(game.playerX, game.playerY, game.mouseX, game.mouseY);
+            
+            if (dist > 4) {
+                // Apply planetary gravity effects
+                const planet = planets[game.currentPlanet];
+                const gravityMultiplier = planet.gravity === '0.14g' ? 0.9 : 
+                                        planet.gravity === '0.13g' ? 0.85 : 
+                                        planet.gravity === '0.38g' ? 1.2 : 0.5;
+                
+                const speed = Math.min(dist * 0.06 * gravityMultiplier, 3.5);
+                game.playerX += (dx / dist) * speed;
+                game.playerY += (dy / dist) * speed;
+                
+                // Constrain to screen bounds
+                game.playerX = clamp(game.playerX, 30, window.innerWidth - 30);
+                game.playerY = clamp(game.playerY, 90, window.innerHeight - 30);
+                
+                // Add trail occasionally
+                if (game.time - game.lastTrailTime > 6) {
+                    addTrail();
+                    game.lastTrailTime = game.time;
+                }
+                
+                // Update probe position
+                probe.style.left = (game.playerX - 14) + 'px';
+                probe.style.top = (game.playerY - 14) + 'px';
+                
+                // Consume energy (affected by atmospheric conditions)
+                const planet = planets[game.currentPlanet];
+                const energyDrain = planet.hazards.wind ? 0.035 : 0.025;
+                game.energy = Math.max(0, game.energy - energyDrain);
+            }
+            
+            // Check proximity to features
+            checkFeatureProximity();
+        }
+
+        function checkFeatureProximity() {
+            game.nearFeature = null;
+            game.planetaryFeatures.forEach(feature => {
+                const dist = distance(game.playerX, game.playerY, feature.x, feature.y);
+                if (dist < 50 && !feature.explored) {
+                    game.nearFeature = feature;
+                    feature.element.style.transform = 'scale(1.1)';
+                    feature.element.style.boxShadow = '0 0 20px rgba(182,186,197,0.5)';
+                } else {
+                    feature.element.style.transform = 'scale(1)';
+                    feature.element.style.boxShadow = 'none';
+                }
+            });
+        }
+
+        function updateEnemies() {
+            game.enemies.forEach((enemy, index) => {
+                // Adapt enemy behavior to planetary conditions
+                const planet = planets[game.currentPlanet];
+                if (!enemy.planetAdapted) {
+                    if (planet.hazards.wind) {
+                        enemy.vx *= 1.3; // Wind makes enemies faster
+                        enemy.vy *= 1.3;
+                    }
+                    if (planet.hazards.cold) {
+                        enemy.vx *= 0.8; // Cold makes enemies slower
+                        enemy.vy *= 0.8;
+                    }
+                    enemy.planetAdapted = true;
+                }
+                
+                if (enemy.patrol) {
+                    enemy.angle += 0.018;
+                    enemy.x = enemy.centerX + Math.cos(enemy.angle) * 90;
+                    enemy.y = enemy.centerY + Math.sin(enemy.angle) * 90;
+                } else {
+                    enemy.x += enemy.vx;
+                    enemy.y += enemy.vy;
+                    enemy.vx *= 0.98;
+                    enemy.vy *= 0.98;
+                }
+                
+                // Boundary checking
+                if (enemy.x < 40 || enemy.x > window.innerWidth - 40) {
+                    enemy.vx *= -1;
+                    enemy.centerX = clamp(enemy.centerX, 120, window.innerWidth - 120);
+                }
+                if (enemy.y < 120 || enemy.y > window.innerHeight - 40) {
+                    enemy.vy *= -1;
+                    enemy.centerY = clamp(enemy.centerY, 180, window.innerHeight - 120);
+                }
+                
+                enemy.element.style.left = (enemy.x - 16) + 'px';
+                enemy.element.style.top = (enemy.y - 16) + 'px';
+                
+                // Collision with player
+                const dist = distance(enemy.x, enemy.y, game.playerX, game.playerY);
+                if (dist < 38) {
+                    game.health = Math.max(0, game.health - 12);
+                    game.atmosphere = Math.max(0, game.atmosphere - 5);
+                    game.score = Math.max(0, game.score - 40);
+                    createParticleExplosion(game.playerX, game.playerY, '#ff8787', 8);
+                    showNotification('Hostile Contact - System Damage');
+                    
+                    // Push enemy away
+                    const pushAngle = Math.atan2(enemy.y - game.playerY, enemy.x - game.playerX);
+                    enemy.vx = Math.cos(pushAngle) * 4;
+                    enemy.vy = Math.sin(pushAngle) * 4;
+                    enemy.patrol = false;
+                    
+                    setTimeout(() => {
+                        enemy.patrol = true;
+                        enemy.centerX = enemy.x;
+                        enemy.centerY = enemy.y;
+                        enemy.planetAdapted = false; // Re-adapt to planet
+                    }, 4000);
+                    
+                    updateHUD();
+                    
+                    if (game.health <= 0) {
+                        gameOver();
+                    }
+                } else if (dist < 70) {
+                    game.dronesAvoided++;
+                    game.score += 15;
+                }
+            });
+        }
+
+        function updateHUD() {
+            document.getElementById('healthBar').style.width = game.health + '%';
+            document.getElementById('energyBar').style.width = game.energy + '%';
+            document.getElementById('syncBar').style.width = game.sync + '%';
+            document.getElementById('atmosphereBar').style.width = game.atmosphere + '%';
+            document.getElementById('fragmentCount').textContent = game.fragmentsCollected;
+            document.getElementById('dronesAvoided').textContent = game.dronesAvoided;
+            document.getElementById('featuresExplored').textContent = game.featuresExplored;
+            document.getElementById('planetsVisited').textContent = game.planetsVisited;
+            document.getElementById('score').textContent = game.score;
+        }
+
+        function updatePlanet() {
+            const planet = planets[game.currentPlanet];
+            document.getElementById('planetName').textContent = planet.name;
+            document.getElementById('planetName').style.color = planet.color;
+            document.getElementById('temperature').textContent = planet.temp;
+            document.getElementById('gravity').textContent = planet.gravity;
+            document.getElementById('sector').textContent = planet.sector;
+            document.getElementById('planetStatus').textContent = planet.status;
+            
+            // Update background with planet colors
+            document.body.style.background = `linear-gradient(135deg, ${planet.color}33 0%, #383e4e 40%, #2a2f3d 70%, #1e2330 100%)`;
+            
+            updateAtmosphericReadings();
+        }
+
+        function drawBackground() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw planetary-specific background elements
+            const planet = planets[game.currentPlanet];
+            
+            // Base grid
+            ctx.globalAlpha = 0.03;
+            ctx.strokeStyle = planet.color;
+            ctx.lineWidth = 1;
+            
+            const gridSize = 60;
+            for (let x = 0; x < canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            for (let y = 80; y < canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            
+            // Planet-specific atmospheric effects
+            ctx.globalAlpha = 0.02;
+            ctx.fillStyle = planet.color;
+            
+            // Different patterns for each planet
+            if (planet.name === 'TITAN') {
+                // Methane clouds
+                for (let i = 0; i < 6; i++) {
+                    const x = (window.innerWidth / 6) * i;
+                    const y = 150 + Math.sin(game.time * 0.0005 + i) * 50;
+                    const size = 60 + Math.sin(game.time * 0.0003 + i * 2) * 30;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            } else if (planet.name === 'EUROPA') {
+                // Ice formations
+                ctx.globalAlpha = 0.03;
+                for (let i = 0; i < 8; i++) {
+                    const x = random(0, canvas.width);
+                    const y = 200 + Math.sin(game.time * 0.0008 + i) * 100;
+                    ctx.fillRect(x, y, 40, 10);
+                }
+            } else if (planet.name === 'MARS') {
+                // Dust patterns
+                ctx.globalAlpha = 0.04;
+                for (let i = 0; i < 10; i++) {
+                    const x = (window.innerWidth / 10) * i + Math.sin(game.time * 0.001 + i) * 50;
+                    const y = 300 + Math.cos(game.time * 0.0007 + i) * 80;
+                    const size = 20 + Math.sin(game.time * 0.0009 + i) * 15;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            ctx.globalAlpha = 1;
+        }
+
+        // Game Control Functions
+        function startGame() {
+            game.isPlaying = true;
+            game.isPaused = false;
+            document.getElementById('gameMenu').style.display = 'none';
+            
+            // Initialize game objects
+            for (let i = 0; i < 6; i++) {
+                spawnCollectible();
+            }
+            for (let i = 0; i < 3; i++) {
+                createEnemy();
+            }
+            
+            // Setup initial planet environment
+            setupPlanetEnvironment(planets[game.currentPlanet]);
+            
+            updateHUD();
+            updatePlanet();
+            showNotification('Mission Commenced - Planetary exploration initiated');
+        }
+
+        function togglePause() {
+            if (!game.isPlaying) return;
+            
+            game.isPaused = !game.isPaused;
+            document.getElementById('pauseBtn').textContent = game.isPaused ? 'Resume' : 'Pause';
+            
+            if (game.isPaused) {
+                showNotification('Mission Paused');
+            } else {
+                showNotification('Mission Resumed');
+            }
+        }
+
+        function showInstructions() {
+            showNotification('Navigate with mouse. Click for energy pulse. Explore planetary features with F key. Collect fragments. Avoid drones. Adapt to each world\'s unique conditions.');
+        }
+
+        function gameOver() {
+            game.isPlaying = false;
+            clearPlanetaryElements();
+            showNotification(`Mission Terminated - Final Score: ${game.score}`);
+            
+            setTimeout(() => {
+                if (confirm(`Mission failed. Final Score: ${game.score}\nPlanets Explored: ${game.planetsVisited}\nFeatures Discovered: ${game.featuresExplored}\n\nRestart exploration mission?`)) {
+                    location.reload();
+                } else {
+                    document.getElementById('gameMenu').style.display = 'block';
+                }
+            }, 3500);
+        }
+
+        function gameOver() {
+            game.isPlaying = false;
+            clearPlanetaryElements();
+            showNotification(`Mission Terminated - Final Score: ${game.score}`);
+            
+            setTimeout(() => {
+                if (confirm(`Mission failed. Final Score: ${game.score}\nPlanets Explored: ${game.planetsVisited}\nFeatures Discovered: ${game.featuresExplored}\n\nRestart exploration mission?`)) {
+                    location.reload();
+                } else {
+                    document.getElementById('gameMenu').style.display = 'block';
+                }
+            }, 3500);
+        }
+
+        // Event Listeners
+        document.addEventListener('mousemove', (e) => {
+            game.mouseX = e.clientX;
+            game.mouseY = e.clientY;
+            
+            cursor.style.left = (e.clientX - 12) + 'px';
+            cursor.style.top = (e.clientY - 12) + 'px';
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!game.isPlaying || game.isPaused) return;
+            
+            // Enhanced energy pulse with planetary effects
+            const planet = planets[game.currentPlanet];
+            let energyGain = 10;
+            
+            // Planetary bonuses for energy pulses
+            if (planet.bonuses.energy && planet.bonuses.energy > 1) {
+                energyGain *= planet.bonuses.energy;
+            }
+            
+            game.energy = Math.min(100, game.energy + energyGain);
+            game.score += 8;
+            createParticleExplosion(e.clientX, e.clientY, planet.color, 8);
+            createRipple(e.clientX, e.clientY);
+            updateHUD();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            switch(e.code) {
+                case 'Space':
+                    e.preventDefault();
+                    togglePause();
+                    break;
+                case 'Escape':
+                    e.preventDefault();
+                    document.getElementById('gameMenu').style.display = 
+                        document.getElementById('gameMenu').style.display === 'none' ? 'block' : 'none';
+                    break;
+                case 'KeyF':
+                    e.preventDefault();
+                    // Interact with nearby planetary feature
+                    if (game.nearFeature && !game.nearFeature.explored) {
+                        interactWithFeature(game.nearFeature.element, game.nearFeature.type, game.nearFeature.x, game.nearFeature.y);
+                    }
+                    break;
+                case 'KeyR':
+                    if (e.ctrlKey) {
+                        e.preventDefault();
+                        location.reload();
+                    }
+                    break;
+            }
+        });
+
+        // Enhanced Game Loop with planetary mechanics
+        function gameLoop() {
+            if (game.isPlaying && !game.isPaused) {
+                game.time++;
+                
+                updatePlayer();
+                updateEnemies();
+                drawBackground();
+                
+                // Planetary atmospheric effects
+                const planet = planets[game.currentPlanet];
+                
+                // Gradual atmospheric adaptation
+                if (game.time % 300 === 0) {
+                    if (planet.hazards.radiation) {
+                        game.health = Math.max(0, game.health - 2);
+                        game.atmosphere = Math.max(0, game.atmosphere - 3);
+                    }
+                    if (planet.hazards.cold || planet.hazards.extreme_cold) {
+                        game.energy = Math.max(0, game.energy - (planet.hazards.extreme_cold ? 3 : 1));
+                    }
+                    if (planet.hazards.dust) {
+                        game.sync = Math.max(0, game.sync - 1);
+                    }
+                }
+                
+                // Enhanced regeneration with planetary bonuses
+                if (game.time % 200 === 0) {
+                    let energyRegen = 3;
+                    let syncRegen = 1.5;
+                    let healthRegen = 0;
+                    
+                    if (planet.bonuses.energy > 1) energyRegen *= planet.bonuses.energy;
+                    if (planet.bonuses.health > 1) healthRegen = 2 * planet.bonuses.health;
+                    if (planet.bonuses.sync > 1) syncRegen *= planet.bonuses.sync;
+                    
+                    game.energy = Math.min(100, game.energy + energyRegen);
+                    game.sync = Math.min(100, game.sync + syncRegen);
+                    if (healthRegen > 0) {
+                        game.health = Math.min(100, game.health + healthRegen);
+                    }
+                    
+                    // Atmospheric recovery
+                    game.atmosphere = Math.min(100, game.atmosphere + 2);
+                    updateHUD();
+                }
+                
+                // Passive score with planetary exploration bonuses
+                if (game.time % 90 === 0) {
+                    let scoreGain = Math.floor(game.sync / 15);
+                    if (planet.bonuses.exploration > 1) {
+                        scoreGain *= planet.bonuses.exploration;
+                    }
+                    game.score += scoreGain;
+                    updateHUD();
+                }
+                
+                // Spawn powerups with planetary variety
+                if (game.time % 1200 === 0 && Math.random() > 0.5) {
+                    // Higher chance of atmosphere powerups on harsh planets
+                    if ((planet.hazards.radiation || planet.hazards.extreme_cold) && Math.random() > 0.6) {
+                        createPowerup('atmosphere');
+                    } else {
+                        createPowerup();
+                    }
+                }
+                
+                // Planet switching every 50 seconds
+                if (game.time % 3000 === 0) {
+                    switchPlanet();
+                }
+                
+                // Dynamic difficulty with planetary adaptation
+                if (game.time % 3600 === 0 && game.enemies.length < 8) {
+                    createEnemy();
+                    showNotification('Increased Hostile Activity - Drones Adapting to Environment');
+                }
+                
+                // Planetary-specific environmental events
+                if (game.time % 1800 === 0) {
+                    triggerPlanetaryEvent(planet);
+                }
+                
+                // Achievement checks
+                checkAchievements();
+            }
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        function triggerPlanetaryEvent(planet) {
+            const eventChance = Math.random();
+            
+            if (planet.name === 'TITAN' && eventChance > 0.7) {
+                // Methane storm
+                game.atmosphere = Math.max(0, game.atmosphere - 15);
+                game.energy = Math.min(100, game.energy + 10); // But gain energy from methane
+                showNotification('Methane Storm - Atmospheric pressure rising, energy systems boosted');
+                
+                // Create multiple wind streams
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => createEnvironmentalEffect('wind-stream'), i * 500);
+                }
+                
+            } else if (planet.name === 'EUROPA' && eventChance > 0.8) {
+                // Ice geyser eruption
+                game.health = Math.min(100, game.health + 20);
+                game.sync = Math.min(100, game.sync + 15);
+                showNotification('Subsurface Geyser Eruption - Pure water detected, systems refreshing');
+                
+                // Spawn bonus collectible
+                setTimeout(() => spawnCollectible(), 2000);
+                
+            } else if (planet.name === 'MARS' && eventChance > 0.6) {
+                // Global dust storm
+                game.sync = Math.max(0, game.sync - 10);
+                game.atmosphere = Math.max(0, game.atmosphere - 8);
+                showNotification('Global Dust Storm - Navigation systems compromised');
+                
+                // Create multiple dust effects
+                for (let i = 0; i < 4; i++) {
+                    setTimeout(() => createEnvironmentalEffect('dust-storm'), i * 1000);
+                }
+                
+            } else if (planet.name === 'ENCELADUS' && eventChance > 0.75) {
+                // Cryovolcanic activity
+                game.health = Math.max(0, game.health - 8);
+                game.score += 150; // But gain rare materials
+                showNotification('Cryovolcanic Activity - Radiation spike detected, rare materials discovered');
+                
+                // Spawn rare powerup
+                setTimeout(() => createPowerup('score'), 1500);
+            }
+            
+            updateHUD();
+        }
+
+        // Enhanced Achievement System with planetary goals
+        let achievements = {
+            firstFragment: false,
+            collector: false,
+            survivor: false,
+            explorer: false,
+            planetarySpecialist: false,
+            environmentalMaster: false,
+            cosmicWanderer: false
+        };
+
+        function checkAchievements() {
+            if (!achievements.firstFragment && game.fragmentsCollected >= 1) {
+                achievements.firstFragment = true;
+                showNotification('Achievement: First Contact - Archive fragment recovered');
+                game.score += 150;
+                updateHUD();
+            }
+            
+            if (!achievements.collector && game.fragmentsCollected >= 15) {
+                achievements.collector = true;
+                showNotification('Achievement: Archive Curator - Extensive data recovery');
+                game.score += 400;
+                updateHUD();
+            }
+            
+            if (!achievements.survivor && game.dronesAvoided >= 35) {
+                achievements.survivor = true;
+                showNotification('Achievement: Stealth Operative - Master of evasion');
+                game.score += 350;
+                updateHUD();
+            }
+            
+            if (!achievements.explorer && game.score >= 3000) {
+                achievements.explorer = true;
+                showNotification('Achievement: Deep Space Pioneer - Exploration excellence');
+                game.score += 600;
+                updateHUD();
+            }
+            
+            if (!achievements.planetarySpecialist && game.featuresExplored >= 8) {
+                achievements.planetarySpecialist = true;
+                showNotification('Achievement: Planetary Specialist - Environmental interaction mastery');
+                game.score += 500;
+                updateHUD();
+            }
+            
+            if (!achievements.environmentalMaster && game.planetsVisited >= 4 && game.featuresExplored >= 12) {
+                achievements.environmentalMaster = true;
+                showNotification('Achievement: Environmental Master - Complete planetary adaptation');
+                game.score += 800;
+                updateHUD();
+            }
+            
+            if (!achievements.cosmicWanderer && game.score >= 7500) {
+                achievements.cosmicWanderer = true;
+                showNotification('Achievement: Cosmic Wanderer - Ultimate post-human consciousness');
+                game.score += 1500;
+                updateHUD();
+            }
+        }
+
+        // Window resize handler
+        window.addEventListener('resize', () => {
+            setupCanvas();
+            game.playerX = clamp(game.playerX, 30, window.innerWidth - 30);
+            game.playerY = clamp(game.playerY, 90, window.innerHeight - 30);
+        });
+
+        // Initialize game
+        document.getElementById('gameMenu').style.display = 'block';
+        updatePlanet();
+        
+        // Add event listeners to menu buttons
+        document.getElementById('startBtn').addEventListener('click', startGame);
+        document.getElementById('instructBtn').addEventListener('click', showInstructions);
+        document.getElementById('pauseBtn').addEventListener('click', togglePause);
+        
+        gameLoop();
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Human Trail - Planetary Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #383e4e 0%, #2a2f3d 50%, #1e2330 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow: hidden;
+            cursor: none;
+            color: #b6bac5;
+            transition: background 1s ease;
+        }
+
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .hud-top {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(180deg, rgba(56,62,78,0.95) 0%, rgba(56,62,78,0.3) 100%);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            z-index: 200;
+            border-bottom: 1px solid rgba(182,186,197,0.1);
+        }
+
+        .signal-status {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .stat-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+        }
+
+        .health-bar, .energy-bar, .sync-bar, .atmosphere-bar {
+            width: 120px;
+            height: 8px;
+            background: rgba(182,186,197,0.1);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(182,186,197,0.2);
+        }
+
+        .bar-fill {
+            height: 100%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 3px;
+        }
+
+        .health-fill { 
+            background: linear-gradient(90deg, #ff6b6b, #ff8787);
+            box-shadow: 0 0 8px rgba(255,107,107,0.3);
+        }
+        .energy-fill { 
+            background: linear-gradient(90deg, #74c0fc, #91a7ff);
+            box-shadow: 0 0 8px rgba(116,192,252,0.3);
+        }
+        .sync-fill { 
+            background: linear-gradient(90deg, #b6bac5, #d0d4dd);
+            box-shadow: 0 0 8px rgba(182,186,197,0.3);
+        }
+        .atmosphere-fill {
+            background: linear-gradient(90deg, #40e0d0, #48cae4);
+            box-shadow: 0 0 8px rgba(64,224,208,0.3);
+        }
+
+        .planet-info {
+            text-align: right;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .planet-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .planet-details {
+            font-size: 11px;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        .planet-status {
+            font-size: 10px;
+            opacity: 0.6;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .custom-cursor {
+            position: fixed;
+            width: 24px;
+            height: 24px;
+            pointer-events: none;
+            z-index: 300;
+            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cursor-ring {
+            width: 100%;
+            height: 100%;
+            border: 2px solid #b6bac5;
+            border-radius: 50%;
+            animation: cursorPulse 2s ease-in-out infinite;
+            box-shadow: 0 0 12px rgba(182,186,197,0.4);
+        }
+
+        @keyframes cursorPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .probe {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            z-index: 100;
+            transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .probe-body {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #b6bac5 40%, rgba(182,186,197,0.4) 70%, transparent 100%);
+            border-radius: 50%;
+            animation: probeGlow 2.5s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(182,186,197,0.5), 0 0 40px rgba(182,186,197,0.2);
+            border: 1px solid rgba(182,186,197,0.3);
+        }
+
+        @keyframes probeGlow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .environmental-effect {
+            position: absolute;
+            pointer-events: none;
+            z-index: 30;
+        }
+
+        .wind-stream {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(182,186,197,0.3), transparent);
+            animation: windFlow 4s linear infinite;
+        }
+
+        @keyframes windFlow {
+            0% { transform: translateX(-100px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100vw); opacity: 0; }
+        }
+
+        .ice-crystal {
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, #74c0fc, transparent);
+            border-radius: 50%;
+            animation: iceFall 6s linear infinite;
+        }
+
+        @keyframes iceFall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .dust-storm {
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, rgba(255,135,135,0.2), transparent);
+            border-radius: 50%;
+            animation: dustSwirl 8s ease-in-out infinite;
+        }
+
+        @keyframes dustSwirl {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+            50% { transform: scale(1.5) rotate(180deg); opacity: 0.6; }
+        }
+
+        .water-geyser {
+            width: 20px;
+            height: 80px;
+            background: linear-gradient(0deg, rgba(116,192,252,0.6), transparent);
+            border-radius: 50%;
+            animation: geyserErupt 3s ease-in-out infinite;
+        }
+
+        @keyframes geyserErupt {
+            0%, 70% { transform: scaleY(0.1); opacity: 0; }
+            85% { transform: scaleY(1); opacity: 1; }
+            100% { transform: scaleY(0.1); opacity: 0; }
+        }
+
+        .collectible {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            z-index: 80;
+            animation: collectibleFloat 4s ease-in-out infinite;
+        }
+
+        .collectible-glow {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #74c0fc 50%, rgba(116,192,252,0.4) 80%, transparent 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 16px rgba(116,192,252,0.6), 0 0 32px rgba(116,192,252,0.2);
+            border: 1px solid rgba(116,192,252,0.4);
+        }
+
+        @keyframes collectibleFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-6px) scale(1.05); }
+        }
+
+        .enemy {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            z-index: 90;
+        }
+
+        .enemy-body {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #ff6b6b 50%, rgba(255,107,107,0.4) 80%, transparent 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 16px rgba(255,107,107,0.6), 0 0 32px rgba(255,107,107,0.2);
+            animation: enemyPulse 1.8s ease-in-out infinite;
+            border: 1px solid rgba(255,107,107,0.4);
+        }
+
+        @keyframes enemyPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .planetary-feature {
+            position: absolute;
+            cursor: pointer;
+            z-index: 75;
+            transition: all 0.3s ease;
+        }
+
+        .planetary-feature:hover {
+            transform: scale(1.1);
+        }
+
+        .methane-lake {
+            width: 80px;
+            height: 60px;
+            background: radial-gradient(ellipse, rgba(255,165,0,0.3), rgba(255,165,0,0.1), transparent);
+            border-radius: 50%;
+            animation: lakeRipple 5s ease-in-out infinite;
+        }
+
+        @keyframes lakeRipple {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255,165,0,0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(255,165,0,0.4); }
+        }
+
+        .ice-field {
+            width: 120px;
+            height: 40px;
+            background: linear-gradient(45deg, rgba(116,192,252,0.2), rgba(208,212,221,0.3));
+            border-radius: 20px;
+            animation: iceShimmer 4s ease-in-out infinite;
+        }
+
+        @keyframes iceShimmer {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .volcanic-vent {
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, rgba(255,107,107,0.6), rgba(255,135,135,0.3), transparent);
+            border-radius: 50%;
+            animation: ventGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes ventGlow {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255,107,107,0.4); }
+            50% { transform: scale(1.2); box-shadow: 0 0 30px rgba(255,107,107,0.8); }
+        }
+
+        .powerup {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            cursor: pointer;
+            z-index: 85;
+            animation: powerupFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes powerupFloat {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .atmospheric-scanner {
+            position: fixed;
+            top: 90px;
+            right: 30px;
+            width: 200px;
+            height: 150px;
+            background: rgba(56,62,78,0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(182,186,197,0.2);
+            border-radius: 12px;
+            padding: 15px;
+            z-index: 150;
+        }
+
+        .scanner-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+            margin-bottom: 10px;
+        }
+
+        .atmospheric-reading {
+            font-size: 10px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .trail {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: radial-gradient(circle, rgba(182,186,197,0.8) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: trailFade 1.2s ease-out forwards;
+            z-index: 50;
+        }
+
+        @keyframes trailFade {
+            0% { opacity: 0.9; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.2); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(56,62,78,0.95);
+            backdrop-filter: blur(20px);
+            padding: 20px 35px;
+            border: 1px solid rgba(182,186,197,0.2);
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            animation: notificationShow 3s ease-out forwards;
+            z-index: 250;
+            max-width: 400px;
+        }
+
+        @keyframes notificationShow {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9) translateY(20px); }
+            15% { opacity: 1; transform: translate(-50%, -50%) scale(1) translateY(0px); }
+            85% { opacity: 1; transform: translate(-50%, -50%) scale(1) translateY(0px); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9) translateY(-20px); }
+        }
+
+        .game-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(56,62,78,0.98);
+            backdrop-filter: blur(30px);
+            padding: 50px;
+            border: 1px solid rgba(182,186,197,0.2);
+            border-radius: 16px;
+            text-align: center;
+            z-index: 300;
+            min-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .menu-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #b6bac5;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .menu-subtitle {
+            font-size: 13px;
+            opacity: 0.7;
+            margin-bottom: 35px;
+            line-height: 1.5;
+            color: #b6bac5;
+        }
+
+        .menu-button {
+            display: block;
+            width: 240px;
+            padding: 14px 24px;
+            margin: 12px auto;
+            background: transparent;
+            border: 1px solid rgba(182,186,197,0.3);
+            border-radius: 8px;
+            color: #b6bac5;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-button:hover {
+            background: rgba(182,186,197,0.1);
+            border-color: rgba(182,186,197,0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .stats-display {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            font-size: 12px;
+            z-index: 150;
+            background: rgba(56,62,78,0.9);
+            backdrop-filter: blur(20px);
+            padding: 20px;
+            border: 1px solid rgba(182,186,197,0.2);
+            border-radius: 12px;
+            min-width: 240px;
+        }
+
+        .stats-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+            margin-bottom: 12px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .controls-hint {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(182,186,197,0.1);
+            font-size: 10px;
+            opacity: 0.6;
+            line-height: 1.4;
+        }
+
+        .score-display {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            text-align: right;
+            z-index: 150;
+            background: rgba(56,62,78,0.9);
+            backdrop-filter: blur(20px);
+            padding: 20px;
+            border: 1px solid rgba(182,186,197,0.2);
+            border-radius: 12px;
+        }
+
+        .score-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+
+        .score-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #b6bac5;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #b6bac5;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 60;
+            box-shadow: 0 0 6px rgba(182,186,197,0.6);
+        }
+
+        .ripple {
+            position: absolute;
+            border: 2px solid rgba(182,186,197,0.6);
+            border-radius: 50%;
+            animation: rippleExpand 1.2s ease-out forwards;
+            pointer-events: none;
+            z-index: 70;
+        }
+
+        @keyframes rippleExpand {
+            0% { 
+                width: 0px; 
+                height: 0px; 
+                opacity: 1; 
+                border-color: rgba(182,186,197,0.8);
+            }
+            100% { 
+                width: 80px; 
+                height: 80px; 
+                opacity: 0; 
+                transform: translate(-40px, -40px);
+                border-color: rgba(182,186,197,0.2);
+            }
+        }
+
+        .planet-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle, rgba(182,186,197,0.1), transparent);
+            opacity: 0;
+            animation: planetTransition 2s ease-in-out;
+            z-index: 400;
+            pointer-events: none;
+        }
+
+        @keyframes planetTransition {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* Glass effects */
+        .glass-panel {
+            background: rgba(56,62,78,0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(182,186,197,0.2);
+            border-radius: 12px;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container" id="gameContainer">
+        <!-- HUD -->
+        <div class="hud-top">
+            <div class="signal-status">
+                <div class="stat-group">
+                    <div class="stat-label">Health</div>
+                    <div class="health-bar"><div class="bar-fill health-fill" id="healthBar" style="width: 100%"></div></div>
+                </div>
+                <div class="stat-group">
+                    <div class="stat-label">Energy</div>
+                    <div class="energy-bar"><div class="bar-fill energy-fill" id="energyBar" style="width: 100%"></div></div>
+                </div>
+                <div class="stat-group">
+                    <div class="stat-label">Sync</div>
+                    <div class="sync-bar"><div class="bar-fill sync-fill" id="syncBar" style="width: 75%"></div></div>
+                </div>
+                <div class="stat-group">
+                    <div class="stat-label">Atmosphere</div>
+                    <div class="atmosphere-bar"><div class="bar-fill atmosphere-fill" id="atmosphereBar" style="width: 60%"></div></div>
+                </div>
+            </div>
+            
+            <div class="planet-info">
+                <div class="planet-name" id="planetName">TITAN</div>
+                <div class="planet-details">
+                    <div>SECTOR: <span id="sector">ALPHA-7</span></div>
+                    <div>TEMP: <span id="temperature">-179°C</span></div>
+                    <div>GRAVITY: <span id="gravity">0.14g</span></div>
+                </div>
+                <div class="planet-status" id="planetStatus">Dense methane atmosphere detected</div>
+            </div>
+        </div>
+
+        <!-- Atmospheric Scanner -->
+        <div class="atmospheric-scanner glass-panel">
+            <div class="scanner-title">Atmospheric Analysis</div>
+            <div class="atmospheric-reading">
+                <span>Oxygen:</span>
+                <span id="oxygenLevel">0.2%</span>
+            </div>
+            <div class="atmospheric-reading">
+                <span>Methane:</span>
+                <span id="methaneLevel">5.7%</span>
+            </div>
+            <div class="atmospheric-reading">
+                <span>Pressure:</span>
+                <span id="pressureLevel">1.5 atm</span>
+            </div>
+            <div class="atmospheric-reading">
+                <span>Wind Speed:</span>
+                <span id="windSpeed">12 m/s</span>
+            </div>
+            <div class="atmospheric-reading">
+                <span>Radiation:</span>
+                <span id="radiationLevel">Low</span>
+            </div>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="stats-display glass-panel">
+            <div class="stats-title">Mission Status</div>
+            <div class="stat-row">
+                <span>Fragments:</span>
+                <span id="fragmentCount">0</span>
+            </div>
+            <div class="stat-row">
+                <span>Drones Avoided:</span>
+                <span id="dronesAvoided">0</span>
+            </div>
+            <div class="stat-row">
+                <span>Features Explored:</span>
+                <span id="featuresExplored">0</span>
+            </div>
+            <div class="stat-row">
+                <span>Planets Visited:</span>
+                <span id="planetsVisited">1</span>
+            </div>
+            <div class="controls-hint">
+                Mouse: Navigate | Click: Energy Pulse<br>
+                SPACE: Pause | ESC: Menu | F: Interact
+            </div>
+        </div>
+
+        <!-- Score Panel -->
+        <div class="score-display glass-panel">
+            <div class="score-label">Exploration Score</div>
+            <div class="score-value" id="score">0</div>
+        </div>
+
+        <!-- Custom Cursor -->
+        <div class="custom-cursor" id="customCursor">
+            <div class="cursor-ring"></div>
+        </div>
+
+        <!-- Game Menu -->
+        <div class="game-menu glass-panel" id="gameMenu">
+            <h2 class="menu-title">THE HUMAN TRAIL</h2>
+            <p class="menu-subtitle">
+                Planetary Consciousness Explorer<br>
+                Navigate diverse alien worlds, interact with planetary features,<br>
+                collect archive fragments, adapt to unique environments.
+            </p>
+            <button class="menu-button" id="startBtn">Begin Mission</button>
+            <button class="menu-button" id="instructBtn">Instructions</button>
+            <button class="menu-button" id="pauseBtn">Pause</button>
+        </div>
+
+        <!-- Player Probe -->
+        <div class="probe" id="playerProbe" style="left: 50%; top: 50%;">
+            <div class="probe-body"></div>
+        </div>
+
+        <!-- Background Canvas -->
+        <canvas id="backgroundCanvas"></canvas>
+    </div>
+
+    <script>
+        // Enhanced Game State with planetary data
+        let game = {
+            isPlaying: false,
+            isPaused: false,
+            health: 100,
+            energy: 100,
+            sync: 75,
+            atmosphere: 60,
+            score: 0,
+            fragmentsCollected: 0,
+            dronesAvoided: 0,
+            featuresExplored: 0,
+            planetsVisited: 1,
+            playerX: window.innerWidth / 2,
+            playerY: window.innerHeight / 2,
+            mouseX: window.innerWidth / 2,
+            mouseY: window.innerHeight / 2,
+            collectibles: [],
+            enemies: [],
+            powerups: [],
+            planetaryFeatures: [],
+            environmentalEffects: [],
+            planetIntervals: [],
+            time: 0,
+            lastTrailTime: 0,
+            currentPlanet: 0,
+            atmosphereData: {},
+            nearFeature: null
+        };
+
+        // Enhanced planetary data with unique mechanics
+        const planets = [
+            {
+                name: 'TITAN',
+                color: '#ffa500',
+                temp: '-179°C',
+                sector: 'ALPHA-7',
+                gravity: '0.14g',
+                status: 'Dense methane atmosphere detected',
+                atmosphere: {
+                    oxygen: 0.2,
+                    methane: 5.7,
+                    pressure: 1.5,
+                    wind: 12,
+                    radiation: 'Low'
+                },
+                features: ['methane-lake', 'ice-field'],
+                effects: ['wind-stream', 'ice-crystal'],
+                hazards: { cold: true, wind: true },
+                bonuses: { energy: 1.2, fragment: 1.0 }
+            },
+            {
+                name: 'EUROPA',
+                color: '#74c0fc',
+                temp: '-160°C',
+                sector: 'BETA-3',
+                gravity: '0.13g',
+                status: 'Subsurface ocean confirmed',
+                atmosphere: {
+                    oxygen: 0.1,
+                    methane: 0.0,
+                    pressure: 0.1,
+                    wind: 0.5,
+                    radiation: 'High'
+                },
+                features: ['ice-field', 'water-geyser'],
+                effects: ['ice-crystal', 'water-geyser'],
+                hazards: { radiation: true, cold: true },
+                bonuses: { health: 1.3, sync: 1.1 }
+            },
+            {
+                name: 'MARS',
+                color: '#ff8787',
+                temp: '-80°C',
+                sector: 'GAMMA-1',
+                gravity: '0.38g',
+                status: 'Dust storm activity moderate',
+                atmosphere: {
+                    oxygen: 0.13,
+                    methane: 0.0,
+                    pressure: 0.6,
+                    wind: 25,
+                    radiation: 'Medium'
+                },
+                features: ['volcanic-vent', 'dust-field'],
+                effects: ['dust-storm', 'wind-stream'],
+                hazards: { dust: true, heat: true },
+                bonuses: { score: 1.4, exploration: 1.2 }
+            },
+            {
+                name: 'ENCELADUS',
+                color: '#d0d4dd',
+                temp: '-201°C',
+                sector: 'DELTA-9',
+                gravity: '0.0113g',
+                status: 'Cryovolcanic activity detected',
+                atmosphere: {
+                    oxygen: 0.4,
+                    methane: 
