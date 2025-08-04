@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subsurface Oceans and Geothermal Activity</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+            font-family: 'Exo 2', sans-serif;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: auto;
+        }
+
+        .chart-container {
+            padding: 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .title {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #7dd3fc;
+            opacity: 0.8;
+        }
+
+        .worlds-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .world-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+        }
+
+        .world-card:hover {
+            border-color: rgba(0, 212, 255, 0.6);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+        }
+
+        .world-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00d4ff, #7dd3fc, #38bdf8);
+        }
+
+        .world-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .world-visual {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .europa {
+            background: radial-gradient(circle at 30% 30%, #a8dadc, #457b9d, #1d3557);
+            position: relative;
+        }
+
+        .europa::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 15%;
+            width: 70%;
+            height: 60%;
+            background: linear-gradient(45deg, #1d3557 30%, transparent 35%, transparent 65%, #1d3557 70%);
+            opacity: 0.6;
+        }
+
+        .enceladus {
+            background: radial-gradient(circle at 30% 30%, #f1faee, #a8dadc, #457b9d);
+            position: relative;
+        }
+
+        .enceladus::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            right: 20%;
+            width: 60%;
+            height: 80%;
+            background: linear-gradient(135deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+        }
+
+        .earth {
+            background: radial-gradient(circle at 30% 30%, #2d5016, #22577a, #38a3a5);
+            position: relative;
+        }
+
+        .earth::after {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 20%;
+            width: 60%;
+            height: 40%;
+            background: #2d5016;
+            border-radius: 60% 40% 50% 30%;
+            opacity: 0.8;
+        }
+
+        .cross-section {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .layer {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .ice-shell {
+            background: linear-gradient(90deg, rgba(168, 218, 220, 0.3), rgba(168, 218, 220, 0.1));
+            border-left: 4px solid #a8dadc;
+        }
+
+        .ocean-layer {
+            background: linear-gradient(90deg, rgba(69, 123, 157, 0.3), rgba(69, 123, 157, 0.1));
+            border-left: 4px solid #457b9d;
+        }
+
+        .core-layer {
+            background: linear-gradient(90deg, rgba(139, 69, 19, 0.3), rgba(139, 69, 19, 0.1));
+            border-left: 4px solid #8b4513;
+        }
+
+        .thermal-vent {
+            background: linear-gradient(90deg, rgba(255, 107, 53, 0.3), rgba(255, 107, 53, 0.1));
+            border-left: 4px solid #ff6b35;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #7dd3fc;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .features-section {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.8));
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .features-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00d4ff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-card {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(0, 212, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .feature-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+
+        .feature-description {
+            font-size: 1rem;
+            color: #cbd5e1;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .feature-details {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .plume-animation {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 40px;
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.8), transparent);
+            animation: plume 3s ease-in-out infinite;
+        }
+
+        @keyframes plume {
+            0%, 100% { opacity: 0.3; height: 20px; }
+            50% { opacity: 0.8; height: 50px; }
+        }
+
+        .orbit-animation {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50%;
+            animation: rotate 15s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .thermal-glow {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 30px;
+            background: radial-gradient(ellipse, rgba(255, 107, 53, 0.6), transparent);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { opacity: 0.4; transform: translateX(-50%) scale(1); }
+            to { opacity: 0.8; transform: translateX(-50%) scale(1.2); }
+        }
+
+        .data-visual {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .data-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #38bdf8);
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .analog-indicator {
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid rgba(255, 107, 53, 0.5);
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #ff6b35;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1200px) {
+            .worlds-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .worlds-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .world-visual {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <div class="header">
+            <h1 class="title">SUBSURFACE OCEANS & GEOTHERMAL ACTIVITY</h1>
+            <p class="subtitle">Hidden worlds beneath ice - potential harbors for life</p>
+        </div>
+
+        <div class="worlds-grid">
+            <!-- Europa -->
+            <div class="world-card">
+                <h2 class="world-name">EUROPA</h2>
+                <div class="world-visual europa">
+                    <div class="orbit-animation"></div>
+                    <div class="plume-animation"></div>
+                    <div class="thermal-glow"></div>
+                </div>
+                
+                <div class="cross-section">
+                    <div class="layer ice-shell">
+                        <span>🧊 Ice Shell: 15-25 km thick</span>
+                    </div>
+                    <div class="layer ocean-layer">
+                        <span>🌊 Subsurface Ocean: 60-150 km deep</span>
+                    </div>
+                    <div class="layer core-layer">
+                        <span>🪨 Rocky Core: Tidal heating source</span>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Ocean Volume</div>
+                        <div class="stat-value">2-3x Earth's</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Plume Height</div>
+                        <div class="stat-value">200 km</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Tidal Heating</div>
+                        <div class="stat-value">Active</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Water Vapor</div>
+                        <div class="stat-value">Detected</div>
+                    </div>
+                </div>
+                
+                <div class="data-visual">
+                    <div class="data-fill" style="width: 85%"></div>
+                </div>
+            </div>
+
+            <!-- Enceladus -->
+            <div class="world-card">
+                <h2 class="world-name">ENCELADUS</h2>
+                <div class="world-visual enceladus">
+                    <div class="orbit-animation"></div>
+                    <div class="plume-animation" style="animation-delay: 1s;"></div>
+                    <div class="plume-animation" style="left: 40%; animation-delay: 0.5s;"></div>
+                    <div class="plume-animation" style="left: 60%; animation-delay: 1.5s;"></div>
+                    <div class="thermal-glow"></div>
+                </div>
+                
+                <div class="cross-section">
+                    <div class="layer ice-shell">
+                        <span>🧊 Ice Shell: 30-40 km thick</span>
+                    </div>
+                    <div class="layer ocean-layer">
+                        <span>🌊 Global Ocean: 10 km deep</span>
+                    </div>
+                    <div class="layer core-layer">
+                        <span>🪨 Porous Core: Hydrothermal activity</span>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Tiger Stripes</div>
+                        <div class="stat-value">4 Major</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Plume Speed</div>
+                        <div class="stat-value">400 m/s</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Organics</div>
+                        <div class="stat-value">Complex</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Silica Grains</div>
+                        <div class="stat-value">Confirmed</div>
+                    </div>
+                </div>
+                
+                <div class="data-visual">
+                    <div class="data-fill" style="width: 92%"></div>
+                </div>
+            </div>
+
+            <!-- Earth Analogs -->
+            <div class="world-card">
+                <h2 class="world-name">EARTH ANALOGS</h2>
+                <div class="world-visual earth">
+                    <div class="orbit-animation"></div>
+                    <div class="thermal-glow"></div>
+                </div>
+                
+                <div class="cross-section">
+                    <div class="layer ocean-layer">
+                        <span>🌊 Deep Ocean: 2-4 km depth</span>
+                    </div>
+                    <div class="layer thermal-vent">
+                        <span>🔥 Hydrothermal Vents: 350°C+</span>
+                    </div>
+                    <div class="layer core-layer">
+                        <span>🪨 Seafloor: Volcanic activity</span>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Vent Sites</div>
+                        <div class="stat-value">1000+</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Ecosystems</div>
+                        <div class="stat-value">Thriving</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Energy Source</div>
+                        <div class="stat-value">Chemical</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Sunlight</div>
+                        <div class="stat-value">None</div>
+                    </div>
+                </div>
+                
+                <div class="analog-indicator">
+                    🔬 Earth Analog for Extraterrestrial Life
+                </div>
+                
+                <div class="data-visual">
+                    <div class="data-fill" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features-section">
+            <h2 class="features-title">KEY ASTROBIOLOGICAL FEATURES</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3 class="feature-name">🔥 Tidal Heating</h3>
+                    <p class="feature-description">
+                        Gravitational forces from Jupiter and Saturn create internal friction, keeping subsurface oceans liquid despite extreme cold surface temperatures.
+                    </p>
+                    <p class="feature-details">
+                        This process provides continuous energy for potential chemical reactions and maintains stable liquid environments for billions of years.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3 class="feature-name">💨 Water Vapor Plumes</h3>
+                    <p class="feature-description">
+                        Jets of water vapor erupting from surface cracks contain complex organic molecules, salts, and silica particles - evidence of ocean-rock interactions.
+                    </p>
+                    <p class="feature-details">
+                        Cassini and Hubble have detected hydrogen, methane, and other compounds suggesting active chemistry beneath the ice.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3 class="feature-name">🧬 Complex Organic Chemistry</h3>
+                    <p class="feature-description">
+                        Detected organic compounds include amino acids, fatty acids, and aromatic hydrocarbons - building blocks essential for life as we know it.
+                    </p>
+                    <p class="feature-details">
+                        These molecules form through hydrothermal processes similar to those that may have sparked life on early Earth.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3 class="feature-name">🌊 Deep-Sea Hydrothermal Vents</h3>
+                    <p class="feature-description">
+                        Earth's deep-ocean vents support thriving ecosystems powered by chemical energy rather than sunlight, proving life can exist in similar conditions.
+                    </p>
+                    <p class="feature-details">
+                        These environments host unique organisms that derive energy from sulfur and methane compounds, providing a template for potential extraterrestrial life.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3 class="feature-name">⚡ Chemical Energy Sources</h3>
+                    <p class="feature-description">
+                        Hydrothermal activity creates chemical gradients and energy sources independent of solar radiation, enabling chemosynthetic life processes.
+                    </p>
+                    <p class="feature-details">
+                        Redox reactions between water and rock produce hydrogen and other compounds that could fuel metabolic processes.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3 class="feature-name">🛡️ Stable Environments</h3>
+                    <p class="feature-description">
+                        Subsurface oceans are protected from radiation and temperature extremes, providing stable conditions for potential life over geological timescales.
+                    </p>
+                    <p class="feature-details">
+                        The ice shell acts as a shield while tidal heating ensures long-term habitability spanning billions of years.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactive hover effects
+        document.querySelectorAll('.world-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const visual = card.querySelector('.world-visual');
+                visual.style.transform = 'scale(1.05)';
+                visual.style.transition = 'transform 0.4s ease';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                const visual = card.querySelector('.world-visual');
+                visual.style.transform = 'scale(1)';
+            });
+        });
+
+        // Animate data bars on scroll
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const dataFill = entry.target.querySelector('.data-fill');
+                    if (dataFill) {
+                        const width = dataFill.style.width;
+                        dataFill.style.width = '0%';
+                        setTimeout(() => {
+                            dataFill.style.width = width;
+                        }, 300);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.world-card, .feature-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Add floating ice particles
+        function createIceParticles() {
+            const container = document.querySelector('.chart-container');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = '3px';
+                particle.style.height = '3px';
+                particle.style.background = '#a8dadc';
+                particle.style.borderRadius = '50%';
+                particle.style.pointerEvents = 'none';
+                particle.style.opacity = Math.random() * 0.6;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animation = `float ${4 + Math.random() * 6}s linear infinite`;
+                container.appendChild(particle);
+            }
+        }
+
+        // Add CSS for particle animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0% { transform: translateY(0px) translateX(0px); opacity: 0; }
+                10% { opacity: 0.6; }
+                90% { opacity: 0.6; }
+                100% { transform: translateY(-100vh) translateX(30px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        createIceParticles();
+
+        // Add thermal pulse effect
+        setInterval(() => {
+            document.querySelectorAll('.thermal-glow').forEach(glow => {
+                glow.style.opacity = Math.random() * 0.4 + 0.4;
+            });
+        }, 2000);
+    </script>
+</body>
+</html>

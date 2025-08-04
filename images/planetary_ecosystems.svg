@@ -1,0 +1,122 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients for alien planet surface -->
+    <linearGradient id="planetGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#CD853F;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A0522D;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Sky gradient -->
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A148C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7B1FA2;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Dome gradient -->
+    <radialGradient id="domeGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1976D2;stop-opacity:0.6" />
+    </radialGradient>
+    
+    <!-- Soil layers -->
+    <linearGradient id="soilGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8D6E63;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#5D4037;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#3E2723;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#263238;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Alien sky background -->
+  <rect width="800" height="400" fill="url(#skyGrad)"/>
+  
+  <!-- Distant alien mountains -->
+  <polygon points="0,350 150,250 300,280 450,220 600,260 800,240 800,400 0,400" fill="#2E1065" opacity="0.7"/>
+  
+  <!-- Two moons -->
+  <circle cx="650" cy="80" r="25" fill="#E0E0E0" opacity="0.8"/>
+  <circle cx="720" cy="120" r="15" fill="#BDBDBD" opacity="0.6"/>
+  
+  <!-- Ground surface -->
+  <rect x="0" y="400" width="800" height="200" fill="url(#planetGrad)"/>
+  
+  <!-- Biodome structure -->
+  <ellipse cx="400" cy="400" rx="180" ry="120" fill="url(#domeGrad)" stroke="#1976D2" stroke-width="2"/>
+  
+  <!-- Dome support framework -->
+  <path d="M 220 400 Q 400 280 580 400" stroke="#1976D2" stroke-width="1.5" fill="none"/>
+  <path d="M 270 380 Q 400 300 530 380" stroke="#1976D2" stroke-width="1" fill="none"/>
+  <line x1="400" y1="280" x2="400" y2="400" stroke="#1976D2" stroke-width="1.5"/>
+  
+  <!-- Engineered soil layers (cross-section view) -->
+  <rect x="50" y="450" width="120" height="80" fill="url(#soilGrad)" stroke="#424242" stroke-width="1"/>
+  <rect x="50" y="530" width="120" height="30" fill="#1B5E20"/>
+  <rect x="50" y="560" width="120" height="20" fill="#0D47A1"/>
+  
+  <!-- Soil layer labels -->
+  <text x="180" y="470" font-family="Arial, sans-serif" font-size="10" fill="#FFF">Engineered</text>
+  <text x="180" y="485" font-family="Arial, sans-serif" font-size="10" fill="#FFF">Topsoil</text>
+  <text x="180" y="510" font-family="Arial, sans-serif" font-size="10" fill="#FFF">Nutrient Layer</text>
+  <text x="180" y="545" font-family="Arial, sans-serif" font-size="10" fill="#FFF">Microbial Zone</text>
+  <text x="180" y="570" font-family="Arial, sans-serif" font-size="10" fill="#FFF">Water Retention</text>
+  
+  <!-- Adapted plants inside dome -->
+  <!-- Plant 1: Modified tree with crystalline leaves -->
+  <line x1="320" y1="400" x2="320" y2="340" stroke="#4A5D23" stroke-width="6"/>
+  <polygon points="320,340 310,320 330,320" fill="#7CB342"/>
+  <polygon points="320,350 305,325 335,325" fill="#8BC34A"/>
+  <polygon points="320,360 300,330 340,330" fill="#9CCC65"/>
+  
+  <!-- Plant 2: Spiral succulent -->
+  <line x1="370" y1="400" x2="370" y2="380" stroke="#2E7D32" stroke-width="4"/>
+  <ellipse cx="370" cy="375" rx="8" ry="12" fill="#4CAF50"/>
+  <ellipse cx="365" cy="370" rx="6" ry="10" fill="#66BB6A"/>
+  <ellipse cx="375" cy="365" rx="4" ry="8" fill="#81C784"/>
+  
+  <!-- Plant 3: Bioluminescent flowering plant -->
+  <line x1="450" y1="400" x2="450" y2="350" stroke="#1B5E20" stroke-width="3"/>
+  <circle cx="450" cy="345" r="8" fill="#E91E63" opacity="0.8"/>
+  <circle cx="445" cy="355" r="6" fill="#F06292" opacity="0.7"/>
+  <circle cx="455" cy="355" r="6" fill="#F48FB1" opacity="0.7"/>
+  
+  <!-- Synthetic microbiome visualization -->
+  <g transform="translate(500,450)">
+    <circle cx="0" cy="0" r="3" fill="#00BCD4" opacity="0.8"/>
+    <circle cx="8" cy="5" r="2.5" fill="#00ACC1" opacity="0.7"/>
+    <circle cx="-5" cy="8" r="2" fill="#0097A7" opacity="0.6"/>
+    <circle cx="12" cy="-3" r="2.5" fill="#00838F" opacity="0.8"/>
+    <circle cx="-8" cy="-6" r="3" fill="#006064" opacity="0.7"/>
+    <text x="20" y="5" font-family="Arial, sans-serif" font-size="9" fill="#FFF">Synthetic</text>
+    <text x="20" y="16" font-family="Arial, sans-serif" font-size="9" fill="#FFF">Microbiome</text>
+  </g>
+  
+  <!-- Environmental monitoring stations -->
+  <rect x="280" y="380" width="8" height="20" fill="#455A64"/>
+  <circle cx="284" cy="375" r="3" fill="#FF5722"/>
+  <rect x="520" y="385" width="8" height="15" fill="#455A64"/>
+  <circle cx="524" cy="380" r="3" fill="#4CAF50"/>
+  
+  <!-- Atmospheric processors -->
+  <rect x="600" y="420" width="25" height="40" fill="#37474F" rx="3"/>
+  <rect x="605" y="415" width="15" height="10" fill="#546E7A" rx="2"/>
+  <line x1="612" y1="415" x2="612" y2="400" stroke="#90A4AE" stroke-width="2"/>
+  <text x="630" y="445" font-family="Arial, sans-serif" font-size="9" fill="#FFF">Atmospheric</text>
+  <text x="630" y="456" font-family="Arial, sans-serif" font-size="9" fill="#FFF">Processor</text>
+  
+  <!-- Resource extraction -->
+  <rect x="680" y="470" width="15" height="30" fill="#5D4037"/>
+  <rect x="685" y="465" width="5" height="10" fill="#8D6E63"/>
+  <text x="700" y="485" font-family="Arial, sans-serif" font-size="9" fill="#FFF">Mineral</text>
+  <text x="700" y="496" font-family="Arial, sans-serif" font-size="9" fill="#FFF">Extraction</text>
+  
+  <!-- Title text -->
+  <text x="400" y="30" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFF" text-anchor="middle">Custom-Built Planetary Ecosystems</text>
+  
+  <!-- Key components labels -->
+  <text x="400" y="550" font-family="Arial, sans-serif" font-size="12" fill="#FFF" text-anchor="middle">Engineered Soils • Synthetic Microbiomes • Adapted Plant Species</text>
+  
+  <!-- Connection lines to show ecosystem integration -->
+  <path d="M 170 490 Q 250 450 320 380" stroke="#4CAF50" stroke-width="1.5" fill="none" stroke-dasharray="3,3" opacity="0.7"/>
+  <path d="M 500 460 Q 480 430 450 380" stroke="#00BCD4" stroke-width="1.5" fill="none" stroke-dasharray="3,3" opacity="0.7"/>
+</svg>

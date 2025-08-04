@@ -1,0 +1,235 @@
+<svg viewBox="0 0 900 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients for different zones -->
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4682B4;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="labGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#263238;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#37474F;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="damagedSoil" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8D6E63;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5D4037;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="healthySoil" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
+    </linearGradient>
+    
+    <radialGradient id="alienSim" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#E1BEE7;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:0.8" />
+    </radialGradient>
+    
+    <!-- Glow effects -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="dataGlow">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="900" height="700" fill="url(#skyGrad)"/>
+  
+  <!-- Title -->
+  <text x="450" y="30" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1A237E" text-anchor="middle">Alien Ecosystem Simulations → Earth Ecosystem Rescue</text>
+  
+  <!-- Left side: Research Lab with Alien Simulations -->
+  <g transform="translate(50, 80)">
+    <!-- Lab building -->
+    <rect x="0" y="0" width="200" height="120" fill="url(#labGrad)" stroke="#455A64" stroke-width="2" rx="5"/>
+    <text x="100" y="20" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFF" text-anchor="middle">Research Laboratory</text>
+    
+    <!-- Alien simulation chambers -->
+    <circle cx="60" cy="60" r="25" fill="url(#alienSim)" stroke="#9C27B0" stroke-width="2"/>
+    <circle cx="140" cy="60" r="25" fill="url(#alienSim)" stroke="#9C27B0" stroke-width="2"/>
+    
+    <!-- Alien organisms in simulation -->
+    <g transform="translate(60, 60)">
+      <polygon points="0,-10 -8,5 8,5" fill="#E91E63" opacity="0.8"/>
+      <circle cx="-5" cy="8" r="3" fill="#F06292" opacity="0.7"/>
+      <circle cx="5" cy="8" r="3" fill="#F48FB1" opacity="0.7"/>
+    </g>
+    
+    <g transform="translate(140, 60)">
+      <ellipse cx="0" cy="0" rx="8" ry="12" fill="#673AB7" opacity="0.8"/>
+      <line x1="-5" y1="-8" x2="5" y2="8" stroke="#9C27B0" stroke-width="2"/>
+      <line x1="5" y1="-8" x2="-5" y2="8" stroke="#9C27B0" stroke-width="2"/>
+    </g>
+    
+    <!-- Lab equipment -->
+    <rect x="20" y="90" width="15" height="20" fill="#607D8B"/>
+    <rect x="165" y="90" width="15" height="20" fill="#607D8B"/>
+    <circle cx="27" cy="85" r="3" fill="#4CAF50" filter="url(#glow)"/>
+    <circle cx="172" cy="85" r="3" fill="#FF5722" filter="url(#glow)"/>
+    
+    <text x="100" y="140" font-family="Arial, sans-serif" font-size="10" fill="#37474F" text-anchor="middle">Alien Ecosystem Simulations</text>
+  </g>
+  
+  <!-- Data transfer arrows and information flow -->
+  <g transform="translate(280, 140)">
+    <!-- Data streams -->
+    <path d="M 0 0 Q 50 -20 100 0" stroke="#2196F3" stroke-width="3" fill="none" filter="url(#dataGlow)"/>
+    <path d="M 0 10 Q 50 -10 100 10" stroke="#03A9F4" stroke-width="2" fill="none" filter="url(#dataGlow)"/>
+    <path d="M 0 20 Q 50 0 100 20" stroke="#00BCD4" stroke-width="2" fill="none" filter="url(#dataGlow)"/>
+    
+    <!-- Data points -->
+    <circle cx="25" r="2" fill="#2196F3" filter="url(#dataGlow)"/>
+    <circle cx="50" cy="-15" r="2" fill="#03A9F4" filter="url(#dataGlow)"/>
+    <circle cx="75" cy="5" r="2" fill="#00BCD4" filter="url(#dataGlow)"/>
+    
+    <text x="50" y="40" font-family="Arial, sans-serif" font-size="9" fill="#1565C0" text-anchor="middle">Data Transfer</text>
+    <text x="50" y="52" font-family="Arial, sans-serif" font-size="9" fill="#1565C0" text-anchor="middle">& Analysis</text>
+  </g>
+  
+  <!-- Center: Techniques Development -->
+  <g transform="translate(350, 250)">
+    <rect x="0" y="0" width="200" height="180" fill="#E8F5E8" stroke="#4CAF50" stroke-width="2" rx="8"/>
+    <text x="100" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2E7D32" text-anchor="middle">Advanced Techniques</text>
+    
+    <!-- Synthetic Biology -->
+    <g transform="translate(20, 40)">
+      <text x="0" y="0" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#9C27B0">Synthetic Biology</text>
+      <circle cx="80" cy="10" r="8" fill="#E1BEE7" stroke="#9C27B0" stroke-width="1"/>
+      <path d="M 75 10 Q 80 5 85 10 Q 80 15 75 10" fill="#9C27B0"/>
+      <text x="0" y="25" font-family="Arial, sans-serif" font-size="9" fill="#4A148C">• Designer microorganisms</text>
+      <text x="0" y="38" font-family="Arial, sans-serif" font-size="9" fill="#4A148C">• Engineered symbiosis</text>
+    </g>
+    
+    <!-- Controlled Rewilding -->
+    <g transform="translate(20, 90)">
+      <text x="0" y="0" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FF6F00">Controlled Rewilding</text>
+      <polygon points="80,5 75,15 85,15" fill="#4CAF50"/>
+      <line x1="80" y1="15" x2="80" y2="25" stroke="#2E7D32" stroke-width="3"/>
+      <text x="0" y="25" font-family="Arial, sans-serif" font-size="9" fill="#E65100">• Strategic species introduction</text>
+      <text x="0" y="38" font-family="Arial, sans-serif" font-size="9" fill="#E65100">• Habitat restoration protocols</text>
+    </g>
+    
+    <!-- Precision Ecology -->
+    <g transform="translate(20, 140)">
+      <text x="0" y="0" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1976D2">Precision Ecology</text>
+      <rect x="75" y="5" width="15" height="10" fill="#2196F3" opacity="0.7"/>
+      <circle cx="82" cy="2" r="2" fill="#1976D2"/>
+      <text x="0" y="25" font-family="Arial, sans-serif" font-size="9" fill="#0D47A1">• Real-time monitoring</text>
+      <text x="0" y="38" font-family="Arial, sans-serif" font-size="9" fill="#0D47A1">• Targeted interventions</text>
+    </g>
+  </g>
+  
+  <!-- Right side: Damaged vs Restored Ecosystems -->
+  <g transform="translate(600, 80)">
+    <!-- Before: Damaged Ecosystem -->
+    <text x="100" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#D32F2F" text-anchor="middle">BEFORE: Damaged</text>
+    
+    <!-- Polluted water -->
+    <ellipse cx="100" cy="40" rx="80" ry="15" fill="#795548" opacity="0.8"/>
+    <text x="100" y="45" font-family="Arial, sans-serif" font-size="8" fill="#FFF" text-anchor="middle">Polluted Water</text>
+    
+    <!-- Dead/dying vegetation -->
+    <line x1="60" y1="55" x2="60" y2="85" stroke="#8D6E63" stroke-width="4"/>
+    <polygon points="60,55 55,45 65,45" fill="#8D6E63"/>
+    <line x1="140" y1="55" x2="140" y2="80" stroke="#5D4037" stroke-width="3"/>
+    <polygon points="140,55 137,48 143,48" fill="#5D4037"/>
+    
+    <!-- Eroded soil -->
+    <rect x="20" y="85" width="160" height="25" fill="url(#damagedSoil)"/>
+    <text x="100" y="100" font-family="Arial, sans-serif" font-size="8" fill="#FFF" text-anchor="middle">Eroded Soil</text>
+    
+    <!-- Separator line -->
+    <line x1="0" y1="130" x2="200" y2="130" stroke="#666" stroke-width="1" stroke-dasharray="5,5"/>
+    
+    <!-- After: Restored Ecosystem -->
+    <text x="100" y="150" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#388E3C" text-anchor="middle">AFTER: Restored</text>
+    
+    <!-- Clean water -->
+    <ellipse cx="100" cy="180" rx="80" ry="15" fill="#2196F3" opacity="0.8"/>
+    <text x="100" y="185" font-family="Arial, sans-serif" font-size="8" fill="#FFF" text-anchor="middle">Clean Water</text>
+    
+    <!-- Healthy vegetation -->
+    <line x1="60" y1="195" x2="60" y2="225" stroke="#2E7D32" stroke-width="5"/>
+    <polygon points="60,195 52,175 68,175" fill="#4CAF50"/>
+    <polygon points="60,205 50,185 70,185" fill="#66BB6A"/>
+    
+    <line x1="100" y1="195" x2="100" y2="220" stroke="#1B5E20" stroke-width="4"/>
+    <polygon points="100,195 93,178 107,178" fill="#388E3C"/>
+    
+    <line x1="140" y1="195" x2="140" y2="215" stroke="#2E7D32" stroke-width="4"/>
+    <polygon points="140,195 135,182 145,182" fill="#4CAF50"/>
+    
+    <!-- Restored soil with microbes -->
+    <rect x="20" y="225" width="160" height="25" fill="url(#healthySoil)"/>
+    <circle cx="50" cy="237" r="2" fill="#00BCD4" opacity="0.8"/>
+    <circle cx="100" cy="235" r="2" fill="#00ACC1" opacity="0.8"/>
+    <circle cx="150" cy="238" r="2" fill="#26C6DA" opacity="0.8"/>
+    <text x="100" y="240" font-family="Arial, sans-serif" font-size="8" fill="#FFF" text-anchor="middle">Rich Soil + Microbiome</text>
+  </g>
+  
+  <!-- Application arrows -->
+  <path d="M 430 430 Q 480 480 530 430" stroke="#4CAF50" stroke-width="4" fill="none" marker-end="url(#arrowGreen)" opacity="0.8"/>
+  <path d="M 480 430 Q 520 470 560 430" stroke="#FF6F00" stroke-width="3" fill="none" marker-end="url(#arrowOrange)" opacity="0.8"/>
+  <path d="M 520 430 Q 550 460 580 430" stroke="#1976D2" stroke-width="3" fill="none" marker-end="url(#arrowBlue)" opacity="0.8"/>
+  
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4CAF50"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#FF6F00"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1976D2"/>
+    </marker>
+  </defs>
+  
+  <!-- Success metrics -->
+  <g transform="translate(50, 500)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2E7D32">Ecosystem Recovery Metrics:</text>
+    
+    <g transform="translate(0, 25)">
+      <rect x="0" y="0" width="100" height="12" fill="#E0E0E0" rx="6"/>
+      <rect x="0" y="0" width="85" height="12" fill="#4CAF50" rx="6"/>
+      <text x="110" y="10" font-family="Arial, sans-serif" font-size="10" fill="#2E7D32">Biodiversity: 85% restored</text>
+    </g>
+    
+    <g transform="translate(0, 45)">
+      <rect x="0" y="0" width="100" height="12" fill="#E0E0E0" rx="6"/>
+      <rect x="0" y="0" width="78" height="12" fill="#2196F3" rx="6"/>
+      <text x="110" y="10" font-family="Arial, sans-serif" font-size="10" fill="#1976D2">Water Quality: 78% improved</text>
+    </g>
+    
+    <g transform="translate(0, 65)">
+      <rect x="0" y="0" width="100" height="12" fill="#E0E0E0" rx="6"/>
+      <rect x="0" y="0" width="92" height="12" fill="#FF6F00" rx="6"/>
+      <text x="110" y="10" font-family="Arial, sans-serif" font-size="10" fill="#E65100">Soil Health: 92% restored</text>
+    </g>
+  </g>
+  
+  <!-- Key benefits text -->
+  <g transform="translate(450, 550)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1A237E">Key Benefits from Alien Research:</text>
+    <text x="0" y="20" font-family="Arial, sans-serif" font-size="10" fill="#424242">• Novel biological pathways discovered in extreme conditions</text>
+    <text x="0" y="35" font-family="Arial, sans-serif" font-size="10" fill="#424242">• Advanced symbiotic relationships for ecosystem stability</text>
+    <text x="0" y="50" font-family="Arial, sans-serif" font-size="10" fill="#424242">• Precision monitoring techniques adapted from space research</text>
+    <text x="0" y="65" font-family="Arial, sans-serif" font-size="10" fill="#424242">• Resilient organism design for harsh environments</text>
+  </g>
+  
+  <!-- Bottom summary -->
+  <text x="450" y="650" font-family="Arial, sans-serif" font-size="12" fill="#37474F" text-anchor="middle" font-weight="bold">Alien ecosystem research provides breakthrough solutions for Earth's environmental challenges</text>
+  <text x="450" y="670" font-family="Arial, sans-serif" font-size="10" fill="#616161" text-anchor="middle">Combining synthetic biology, controlled rewilding, and precision ecology for systematic ecosystem restoration</text>
+</svg>

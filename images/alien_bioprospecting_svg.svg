@@ -1,0 +1,359 @@
+<svg viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Alien world gradients -->
+    <radialGradient id="alienWorld1" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#a29bfe"/>
+      <stop offset="40%" stop-color="#6c5ce7"/>
+      <stop offset="80%" stop-color="#2d3436"/>
+      <stop offset="100%" stop-color="#636e72"/>
+    </radialGradient>
+    
+    <radialGradient id="alienWorld2" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#fd79a8"/>
+      <stop offset="40%" stop-color="#e84393"/>
+      <stop offset="80%" stop-color="#2d3436"/>
+      <stop offset="100%" stop-color="#636e72"/>
+    </radialGradient>
+    
+    <radialGradient id="alienWorld3" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#00cec9"/>
+      <stop offset="40%" stop-color="#00b894"/>
+      <stop offset="80%" stop-color="#2d3436"/>
+      <stop offset="100%" stop-color="#636e72"/>
+    </radialGradient>
+    
+    <!-- Molecular gradients -->
+    <radialGradient id="enzymeGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fdcb6e" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#e17055" stop-opacity="0.6"/>
+    </radialGradient>
+    
+    <radialGradient id="moleculeGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#74b9ff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#0984e3" stop-opacity="0.6"/>
+    </radialGradient>
+    
+    <radialGradient id="extremophileGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00b894" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#00a085" stop-opacity="0.6"/>
+    </radialGradient>
+    
+    <!-- Biotech application gradients -->
+    <linearGradient id="biotechGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7675"/>
+      <stop offset="50%" stop-color="#fd79a8"/>
+      <stop offset="100%" stop-color="#e84393"/>
+    </linearGradient>
+    
+    <linearGradient id="medicalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00b894"/>
+      <stop offset="50%" stop-color="#00cec9"/>
+      <stop offset="100%" stop-color="#74b9ff"/>
+    </linearGradient>
+    
+    <!-- Extraction beam -->
+    <linearGradient id="extractionBeam" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.1"/>
+      <stop offset="50%" stop-color="#74b9ff" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.1"/>
+    </linearGradient>
+    
+    <!-- Filters -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="shadow">
+      <feDropShadow dx="3" dy="3" stdDeviation="4" flood-opacity="0.4"/>
+    </filter>
+    
+    <!-- Arrow markers -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#74b9ff"/>
+    </marker>
+    
+    <!-- Molecular structure patterns -->
+    <pattern id="dnaPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="5" cy="5" r="2" fill="#fd79a8" opacity="0.6"/>
+      <circle cx="15" cy="15" r="2" fill="#74b9ff" opacity="0.6"/>
+      <line x1="5" y1="5" x2="15" y2="15" stroke="#ffffff" stroke-width="1" opacity="0.3"/>
+    </pattern>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1400" height="900" fill="#0a0a0a"/>
+  
+  <!-- Stars -->
+  <circle cx="120" cy="80" r="1" fill="#ffffff" opacity="0.8"/>
+  <circle cx="250" cy="60" r="1.5" fill="#ffffff" opacity="0.6"/>
+  <circle cx="380" cy="90" r="1" fill="#ffffff" opacity="0.9"/>
+  <circle cx="520" cy="70" r="1.5" fill="#ffffff" opacity="0.7"/>
+  <circle cx="680" cy="85" r="1" fill="#ffffff" opacity="0.8"/>
+  <circle cx="820" cy="65" r="1.5" fill="#ffffff" opacity="0.6"/>
+  <circle cx="980" cy="95" r="1" fill="#ffffff" opacity="0.9"/>
+  <circle cx="1120" cy="75" r="1.5" fill="#ffffff" opacity="0.7"/>
+  <circle cx="1280" cy="85" r="1" fill="#ffffff" opacity="0.8"/>
+  
+  <!-- Title -->
+  <text x="700" y="50" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="26" font-weight="bold">
+    Alien Ecosystem Bio-Prospecting
+  </text>
+  <text x="700" y="75" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="14">
+    Mining extraterrestrial life for revolutionary biotechnology and medical applications
+  </text>
+  
+  <!-- Alien Worlds Section -->
+  <g id="alien-worlds">
+    <!-- Extremophile World -->
+    <g id="extremophile-world" transform="translate(100, 150)">
+      <circle cx="80" cy="80" r="60" fill="url(#alienWorld1)" filter="url(#shadow)"/>
+      
+      <!-- Extreme environment indicators -->
+      <circle cx="80" cy="80" r="75" fill="none" stroke="#a29bfe" stroke-width="2" opacity="0.6"/>
+      <text x="80" y="45" text-anchor="middle" fill="#a29bfe" font-family="Arial, sans-serif" font-size="8">-200°C</text>
+      <text x="120" y="80" text-anchor="middle" fill="#a29bfe" font-family="Arial, sans-serif" font-size="8">High Radiation</text>
+      <text x="80" y="125" text-anchor="middle" fill="#a29bfe" font-family="Arial, sans-serif" font-size="8">Acid pH 0.5</text>
+      
+      <!-- Extremophile organisms -->
+      <circle cx="65" cy="65" r="4" fill="url(#extremophileGradient)" filter="url(#glow)"/>
+      <circle cx="95" cy="75" r="3" fill="url(#extremophileGradient)" filter="url(#glow)" opacity="0.8"/>
+      <circle cx="75" cy="95" r="5" fill="url(#extremophileGradient)" filter="url(#glow)"/>
+      <circle cx="90" cy="60" r="3.5" fill="url(#extremophileGradient)" filter="url(#glow)" opacity="0.9"/>
+      
+      <text x="80" y="175" text-anchor="middle" fill="#a29bfe" font-family="Arial, sans-serif" font-size="12" font-weight="bold">EXTREMOPHILE WORLD</text>
+      <text x="80" y="190" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">Hyperthermophiles & Radiotrophs</text>
+    </g>
+    
+    <!-- Enzyme-Rich World -->
+    <g id="enzyme-world" transform="translate(350, 150)">
+      <circle cx="80" cy="80" r="60" fill="url(#alienWorld2)" filter="url(#shadow)"/>
+      
+      <!-- Unique chemistry indicators -->
+      <circle cx="80" cy="80" r="75" fill="none" stroke="#fd79a8" stroke-width="2" opacity="0.6"/>
+      <text x="80" y="45" text-anchor="middle" fill="#fd79a8" font-family="Arial, sans-serif" font-size="8">Methane Seas</text>
+      <text x="125" y="80" text-anchor="middle" fill="#fd79a8" font-family="Arial, sans-serif" font-size="8">Silicon-Based</text>
+      <text x="80" y="125" text-anchor="middle" fill="#fd79a8" font-family="Arial, sans-serif" font-size="8">Exotic Catalysts</text>
+      
+      <!-- Enzyme complexes -->
+      <g id="enzyme-complexes">
+        <circle cx="60" cy="70" r="6" fill="url(#enzymeGradient)" filter="url(#glow)"/>
+        <circle cx="100" cy="65" r="5" fill="url(#enzymeGradient)" filter="url(#glow)" opacity="0.8"/>
+        <circle cx="85" cy="95" r="7" fill="url(#enzymeGradient)" filter="url(#glow)"/>
+        <circle cx="70" cy="90" r="4" fill="url(#enzymeGradient)" filter="url(#glow)" opacity="0.9"/>
+        <!-- Enzyme connections -->
+        <line x1="60" y1="70" x2="70" y2="90" stroke="#fdcb6e" stroke-width="1" opacity="0.6"/>
+        <line x1="100" y1="65" x2="85" y2="95" stroke="#fdcb6e" stroke-width="1" opacity="0.6"/>
+      </g>
+      
+      <text x="80" y="175" text-anchor="middle" fill="#fd79a8" font-family="Arial, sans-serif" font-size="12" font-weight="bold">ENZYME WORLD</text>
+      <text x="80" y="190" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">Novel Biocatalysts</text>
+    </g>
+    
+    <!-- Molecular Diversity World -->
+    <g id="molecular-world" transform="translate(600, 150)">
+      <circle cx="80" cy="80" r="60" fill="url(#alienWorld3)" filter="url(#shadow)"/>
+      
+      <!-- Biodiversity indicators -->
+      <circle cx="80" cy="80" r="75" fill="none" stroke="#00cec9" stroke-width="2" opacity="0.6"/>
+      <text x="80" y="45" text-anchor="middle" fill="#00cec9" font-family="Arial, sans-serif" font-size="8">Complex Ecosystems</text>
+      <text x="125" y="80" text-anchor="middle" fill="#00cec9" font-family="Arial, sans-serif" font-size="8">Novel Metabolisms</text>
+      <text x="80" y="125" text-anchor="middle" fill="#00cec9" font-family="Arial, sans-serif" font-size="8">Unique Compounds</text>
+      
+      <!-- Diverse molecules -->
+      <g id="diverse-molecules">
+        <circle cx="65" cy="60" r="3" fill="url(#moleculeGradient)" filter="url(#glow)"/>
+        <circle cx="95" cy="70" r="4" fill="url(#moleculeGradient)" filter="url(#glow)" opacity="0.8"/>
+        <circle cx="70" cy="100" r="5" fill="url(#moleculeGradient)" filter="url(#glow)"/>
+        <circle cx="90" cy="90" r="3.5" fill="url(#moleculeGradient)" filter="url(#glow)" opacity="0.9"/>
+        <circle cx="80" cy="70" r="4.5" fill="url(#moleculeGradient)" filter="url(#glow)" opacity="0.7"/>
+        <!-- Molecular networks -->
+        <path d="M 65 60 Q 80 65 95 70 Q 85 80 70 100" stroke="#74b9ff" stroke-width="1" fill="none" opacity="0.5"/>
+      </g>
+      
+      <text x="80" y="175" text-anchor="middle" fill="#00cec9" font-family="Arial, sans-serif" font-size="12" font-weight="bold">MOLECULAR WORLD</text>
+      <text x="80" y="190" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">Bioactive Compounds</text>
+    </g>
+  </g>
+  
+  <!-- Extraction/Collection Process -->
+  <g id="extraction-process">
+    <!-- Bio-prospecting probe -->
+    <g transform="translate(850, 200)">
+      <rect x="0" y="0" width="80" height="40" fill="url(#biotechGradient)" rx="10" filter="url(#shadow)"/>
+      <circle cx="40" cy="20" r="12" fill="#ffffff" opacity="0.8"/>
+      <text x="40" y="25" text-anchor="middle" fill="#2d3436" font-family="Arial, sans-serif" font-size="8" font-weight="bold">PROBE</text>
+      <text x="40" y="60" text-anchor="middle" fill="#fd79a8" font-family="Arial, sans-serif" font-size="10" font-weight="bold">Bio-Prospecting</text>
+      <text x="40" y="75" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">Collection System</text>
+      
+      <!-- Collection beams -->
+      <path d="M 0 20 Q -50 10 -100 20" stroke="url(#extractionBeam)" stroke-width="8" fill="none" opacity="0.6"/>
+      <path d="M 0 20 Q -50 30 -100 20" stroke="url(#extractionBeam)" stroke-width="6" fill="none" opacity="0.4"/>
+    </g>
+    
+    <!-- Extraction arrows -->
+    <path d="M 680 220 Q 750 200 820 220" stroke="#74b9ff" stroke-width="3" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,5"/>
+    <path d="M 530 220 Q 650 180 820 220" stroke="#74b9ff" stroke-width="3" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,5"/>
+    <path d="M 430 220 Q 550 160 820 220" stroke="#74b9ff" stroke-width="3" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,5"/>
+  </g>
+  
+  <!-- Analysis and Processing -->
+  <g id="analysis-section" transform="translate(100, 400)">
+    <rect x="0" y="0" width="800" height="200" fill="rgba(15, 23, 42, 0.8)" stroke="rgba(116, 185, 255, 0.3)" stroke-width="2" rx="15"/>
+    
+    <text x="400" y="30" text-anchor="middle" fill="#74b9ff" font-family="Arial, sans-serif" font-size="18" font-weight="bold">
+      Molecular Analysis & Processing
+    </text>
+    
+    <!-- Analysis pipeline -->
+    <g id="analysis-pipeline" transform="translate(50, 50)">
+      <!-- Sample collection -->
+      <rect x="0" y="0" width="100" height="60" fill="rgba(0, 184, 148, 0.2)" stroke="#00b894" stroke-width="2" rx="8"/>
+      <text x="50" y="20" text-anchor="middle" fill="#00b894" font-family="Arial, sans-serif" font-size="10" font-weight="bold">Sample</text>
+      <text x="50" y="35" text-anchor="middle" fill="#00b894" font-family="Arial, sans-serif" font-size="10" font-weight="bold">Collection</text>
+      <text x="50" y="50" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">Sterile extraction</text>
+      
+      <!-- Arrow -->
+      <path d="M 110 30 L 140 30" stroke="#74b9ff" stroke-width="2" marker-end="url(#arrowhead)"/>
+      
+      <!-- Sequencing -->
+      <rect x="150" y="0" width="100" height="60" fill="rgba(253, 121, 168, 0.2)" stroke="#fd79a8" stroke-width="2" rx="8"/>
+      <text x="200" y="20" text-anchor="middle" fill="#fd79a8" font-family="Arial, sans-serif" font-size="10" font-weight="bold">DNA/RNA</text>
+      <text x="200" y="35" text-anchor="middle" fill="#fd79a8" font-family="Arial, sans-serif" font-size="10" font-weight="bold">Sequencing</text>
+      <text x="200" y="50" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">Genome analysis</text>
+      
+      <!-- Arrow -->
+      <path d="M 260 30 L 290 30" stroke="#74b9ff" stroke-width="2" marker-end="url(#arrowhead)"/>
+      
+      <!-- Protein analysis -->
+      <rect x="300" y="0" width="100" height="60" fill="rgba(255, 203, 107, 0.2)" stroke="#fdcb6e" stroke-width="2" rx="8"/>
+      <text x="350" y="20" text-anchor="middle" fill="#fdcb6e" font-family="Arial, sans-serif" font-size="10" font-weight="bold">Protein</text>
+      <text x="350" y="35" text-anchor="middle" fill="#fdcb6e" font-family="Arial, sans-serif" font-size="10" font-weight="bold">Analysis</text>
+      <text x="350" y="50" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">Structure & function</text>
+      
+      <!-- Arrow -->
+      <path d="M 410 30 L 440 30" stroke="#74b9ff" stroke-width="2" marker-end="url(#arrowhead)"/>
+      
+      <!-- Synthesis -->
+      <rect x="450" y="0" width="100" height="60" fill="rgba(108, 92, 231, 0.2)" stroke="#6c5ce7" stroke-width="2" rx="8"/>
+      <text x="500" y="20" text-anchor="middle" fill="#6c5ce7" font-family="Arial, sans-serif" font-size="10" font-weight="bold">Bio-synthesis</text>
+      <text x="500" y="35" text-anchor="middle" fill="#6c5ce7" font-family="Arial, sans-serif" font-size="10" font-weight="bold">& Testing</text>
+      <text x="500" y="50" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">Lab reproduction</text>
+      
+      <!-- Discovery types -->
+      <g transform="translate(0, 80)">
+        <text x="350" y="20" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="12" font-weight="bold">Potential Discoveries</text>
+        
+        <circle cx="100" cy="40" r="3" fill="#00b894"/>
+        <text x="110" y="45" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">• Thermostable enzymes for industry</text>
+        
+        <circle cx="100" cy="60" r="3" fill="#fd79a8"/>
+        <text x="110" y="65" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">• Novel antibiotics from alien microbes</text>
+        
+        <circle cx="400" cy="40" r="3" fill="#fdcb6e"/>
+        <text x="410" y="45" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">• Anti-cancer compounds</text>
+        
+        <circle cx="400" cy="60" r="3" fill="#6c5ce7"/>
+        <text x="410" y="65" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">• Radiation-resistant DNA repair systems</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Applications Section -->
+  <g id="applications" transform="translate(950, 400)">
+    <rect x="0" y="0" width="350" height="400" fill="rgba(15, 23, 42, 0.8)" stroke="rgba(0, 184, 148, 0.3)" stroke-width="2" rx="15"/>
+    
+    <text x="175" y="30" text-anchor="middle" fill="#00b894" font-family="Arial, sans-serif" font-size="18" font-weight="bold">
+      Biotechnology Applications
+    </text>
+    
+    <!-- Medical applications -->
+    <g transform="translate(25, 50)">
+      <rect x="0" y="0" width="300" height="80" fill="rgba(0, 184, 148, 0.1)" stroke="rgba(0, 184, 148, 0.3)" stroke-width="1" rx="10"/>
+      <text x="150" y="20" text-anchor="middle" fill="#00b894" font-family="Arial, sans-serif" font-size="14" font-weight="bold">🏥 Medical Applications</text>
+      <text x="20" y="40" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="10">• Novel drug compounds from alien biochemistry</text>
+      <text x="20" y="55" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="10">• Extremophile enzymes for targeted therapy</text>
+      <text x="20" y="70" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="10">• Radiation-resistant biomolecules for cancer treatment</text>
+    </g>
+    
+    <!-- Industrial applications -->
+    <g transform="translate(25, 150)">
+      <rect x="0" y="0" width="300" height="80" fill="rgba(255, 107, 53, 0.1)" stroke="rgba(255, 107, 53, 0.3)" stroke-width="1" rx="10"/>
+      <text x="150" y="20" text-anchor="middle" fill="#ff6b35" font-family="Arial, sans-serif" font-size="14" font-weight="bold">🏭 Industrial Biotech</text>
+      <text x="20" y="40" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="10">• Thermostable enzymes for extreme conditions</text>
+      <text x="20" y="55" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="10">• Bio-catalysts for sustainable manufacturing</text>
+      <text x="20" y="70" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="10">• Novel materials from alien biomineralization</text>
+    </g>
+    
+    <!-- Environmental applications -->
+    <g transform="translate(25, 250)">
+      <rect x="0" y="0" width="300" height="80" fill="rgba(116, 185, 255, 0.1)" stroke="rgba(116, 185, 255, 0.3)" stroke-width="1" rx="10"/>
+      <text x="150" y="20" text-anchor="middle" fill="#74b9ff" font-family="Arial, sans-serif" font-size="14" font-weight="bold">🌍 Environmental</text>
+      <text x="20" y="40" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="10">• Pollution-eating extremophiles</text>
+      <text x="20" y="55" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="10">• Carbon capture biological systems</text>
+      <text x="20" y="70" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="10">• Heavy metal remediation organisms</text>
+    </g>
+    
+    <!-- Space applications -->
+    <g transform="translate(25, 350)">
+      <rect x="0" y="0" width="300" height="40" fill="rgba(108, 92, 231, 0.1)" stroke="rgba(108, 92, 231, 0.3)" stroke-width="1" rx="10"/>
+      <text x="150" y="18" text-anchor="middle" fill="#6c5ce7" font-family="Arial, sans-serif" font-size="12" font-weight="bold">🚀 Space Biotechnology</text>
+      <text x="20" y="32" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="10">• Life support systems for long-duration space missions</text>
+    </g>
+  </g>
+  
+  <!-- Molecular structures floating -->
+  <g id="floating-molecules">
+    <!-- DNA helix -->
+    <g transform="translate(50, 350)">
+      <path d="M 10 10 Q 20 5 30 10 Q 20 15 10 20 Q 20 25 30 30 Q 20 35 10 40" stroke="#fd79a8" stroke-width="2" fill="none" opacity="0.6"/>
+      <circle cx="15" cy="12" r="2" fill="#74b9ff" opacity="0.8"/>
+      <circle cx="25" cy="18" r="2" fill="#00b894" opacity="0.8"/>
+      <circle cx="15" cy="28" r="2" fill="#fdcb6e" opacity="0.8"/>
+    </g>
+    
+    <!-- Protein structure -->
+    <g transform="translate(1250, 150)">
+      <circle cx="10" cy="10" r="4" fill="#ff6b35" opacity="0.7"/>
+      <circle cx="20" cy="15" r="3" fill="#74b9ff" opacity="0.8"/>
+      <circle cx="15" cy="25" r="3.5" fill="#00b894" opacity="0.6"/>
+      <line x1="10" y1="10" x2="20" y2="15" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
+      <line x1="20" y1="15" x2="15" y2="25" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
+    </g>
+    
+    <!-- Enzyme complex -->
+    <g transform="translate(1200, 350)">
+      <polygon points="10,5 20,10 15,20 5,15" fill="#fdcb6e" opacity="0.7"/>
+      <circle cx="12.5" cy="12.5" r="2" fill="#ffffff" opacity="0.8"/>
+    </g>
+  </g>
+  
+  <!-- Ethics and regulation note -->
+  <g id="ethics-note" transform="translate(100, 650)">
+    <rect x="0" y="0" width="1200" height="80" fill="rgba(255, 107, 53, 0.1)" stroke="rgba(255, 107, 53, 0.3)" stroke-width="2" rx="15"/>
+    <text x="600" y="25" text-anchor="middle" fill="#ff6b35" font-family="Arial, sans-serif" font-size="16" font-weight="bold">
+      ⚖️ Ethical Considerations & Planetary Protection
+    </text>
+    <text x="600" y="45" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="11">
+      Bio-prospecting must follow strict protocols to prevent contamination and preserve alien ecosystems
+    </text>
+    <text x="600" y="65" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="11">
+      International treaties required for fair distribution of benefits and protection of extraterrestrial life
+    </text>
+  </g>
+  
+  <!-- Connection flows -->
+  <g id="connection-flows">
+    <!-- From worlds to analysis -->
+    <path d="M 300 320 Q 400 350 500 400" stroke="url(#extractionBeam)" stroke-width="2" fill="none" opacity="0.5"/>
+    <path d="M 550 320 Q 600 350 650 400" stroke="url(#extractionBeam)" stroke-width="2" fill="none" opacity="0.5"/>
+    <path d="M 750 320 Q 800 350 850 400" stroke="url(#extractionBeam)" stroke-width="2" fill="none" opacity="0.5"/>
+    
+    <!-- From analysis to applications -->
+    <path d="M 900 500 Q 920 500 950 500" stroke="#00b894" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  </g>
+  
+</svg>

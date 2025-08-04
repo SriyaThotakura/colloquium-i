@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Studio</title>
+    <link rel="stylesheet" href="lusion-style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="#" class="logo-link">
+                    <div class="logo-text">
+                        <div class="logo-main">Columbia GSAPP <span class="logo-pipe">|</span> <span class="logo-author">Sriya Thotakura</span></div>
+                    </div>
+                </a>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#work" class="nav-link">Work</a></li>
+                    <li class="nav-item"><a href="field_intersection.html" class="nav-link">Field</a></li>
+                    <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <h1 class="hero-title clickable" id="enterExperience">Synthetic Trail</h1>
+            <p class="hero-subtitle">Terraformers of the Post-Human Loop</p>
+            <div class="scroll-indicator" id="scrollIndicator">
+                <div class="scroll-arrow">↓</div>
+                <span class="scroll-text">Click to enter the experience</span>
+            </div>
+        </div>
+        <div class="hero-canvas" id="heroCanvas">
+            <!-- Human Trail Simulation as hero background -->
+            <iframe src="human_trail_sim.html" 
+                    width="100%" 
+                    height="100%" 
+                    frameborder="0"
+                    class="hero-iframe"
+                    id="experienceIframe"
+                    loading="eager"
+                    sandbox="allow-scripts allow-same-origin">
+            </iframe>
+        </div>
+    </section>
+
+    <!-- 3D Architectural Steps Container -->
+    <div id="architecturalSteps" class="architectural-steps">
+        <!-- 3D Canvas will be inserted here by JavaScript -->
+    </div>
+
+    <!-- Experience Steps -->
+    <div id="experienceSections" class="experience-sections">
+        <!-- Section 1 -->
+        <div class="experience-section" data-section="1">
+            <div class="step" data-step="1">
+                <div class="step-content">
+                    <h2>Foundation</h2>
+                    <p>Laying the digital groundwork for our architectural vision.</p>
+                </div>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-content">
+                    <h2>Structure</h2>
+                    <p>Building the framework that will support our digital ecosystem.</p>
+                </div>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step-content">
+                    <h2>Form</h2>
+                    <p>Shaping the visual language of our architectural concept.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="experience-section" data-section="2">
+            <div class="step" data-step="4">
+                <div class="step-content">
+                    <h2>Space</h2>
+                    <p>Defining the volumes and voids that create meaning.</p>
+                </div>
+            </div>
+            <div class="step" data-step="5">
+                <div class="step-content">
+                    <h2>Light</h2>
+                    <p>Manipulating illumination to enhance spatial perception.</p>
+                </div>
+            </div>
+            <div class="step" data-step="6">
+                <div class="step-content">
+                    <h2>Material</h2>
+                    <p>Selecting surfaces that engage the senses.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="experience-section" data-section="3">
+            <div class="step" data-step="7">
+                <div class="step-content">
+                    <h2>Circulation</h2>
+                    <p>Choreographing movement through space.</p>
+                </div>
+            </div>
+            <div class="step" data-step="8">
+                <div class="step-content">
+                    <h2>Function</h2>
+                    <p>Aligning form with purpose and use.</p>
+                </div>
+            </div>
+            <div class="step" data-step="9">
+                <div class="step-content">
+                    <h2>Context</h2>
+                    <p>Responding to the surrounding environment.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="experience-section" data-section="4">
+            <div class="step" data-step="10">
+                <div class="step-content">
+                    <h2>Detail</h2>
+                    <p>Refining the connections and transitions.</p>
+                </div>
+            </div>
+            <div class="step" data-step="11">
+                <div class="step-content">
+                    <h2>Atmosphere</h2>
+                    <p>Creating emotional resonance through space.</p>
+                </div>
+            </div>
+            <div class="step" data-step="12">
+                <div class="step-content">
+                    <h2>Integration</h2>
+                    <p>Bringing all elements into harmony.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5 -->
+        <div class="experience-section" data-section="5">
+            <div class="step" data-step="13">
+                <div class="step-content">
+                    <h2>Innovation</h2>
+                    <p>Pushing boundaries of architectural expression.</p>
+                </div>
+            </div>
+            <div class="step" data-step="14">
+                <div class="step-content">
+                    <h2>Impact</h2>
+                    <p>Measuring success beyond aesthetics.</p>
+                </div>
+            </div>
+            <div class="step" data-step="15">
+                <div class="step-content">
+                    <h2>Legacy</h2>
+                    <p>Creating spaces that endure and inspire.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Work Section -->
+    <section id="work" class="work-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Selected Work</h2>
+                <p class="section-subtitle">A collection of our latest projects</p>
+            </div>
+            
+            <div class="projects-grid">
+                <!-- Project cards will be added here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Terraformers Story Sections -->
+    <section class="story-section" id="story-intro">
+        <div class="story-container">
+            <div class="story-content">
+                <div class="story-header">
+                    <h1 class="story-title">Terraformers of the Post-Human Loop</h1>
+                    <div class="story-subtitle">Colony 07 | Titan | 2981.3 AM (After Migration)</div>
+                    <div class="story-location">Capstone Project - Research Foundations + Project Outline</div>
+                </div>
+                
+                <div class="story-intro-text">
+                    <p>The Server Lichens breathe. Every 4.7 hours, they exhale cooled methane, forming clouds that shade the algorithmic forest. Below, fungal farms regulate bio-electric memory.</p>
+                    <p>There are no humans here—only intentions encoded in the swarm's feedback logic. The Terraformers no longer ask what it means to be alive. They reprogram photosynthesis. They terraform with breath, with code, with decay.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Space Resource Network Visualization -->
+    <section class="space-resource-section" id="space-resource-network">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Interplanetary Resource Network</h2>
+                <p class="section-subtitle">Interactive visualization of space resource management and distribution</p>
+            </div>
+            <div class="space-resource-container">
+                <iframe 
+                    src="space_resource_network.html" 
+                    class="space-resource-iframe"
+                    frameborder="0"
+                    allowfullscreen
+                    sandbox="allow-scripts allow-same-origin">
+                </iframe>
+            </div>
+            <div class="section-description">
+                <p>Explore the complex network of resource extraction and distribution across our solar system. This interactive visualization demonstrates how resources are managed between celestial bodies, highlighting the interconnected nature of space exploration and colonization.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="story-section" id="research-foundation">
+        <div class="story-container">
+            <div class="story-content">
+                <h2 class="section-title">Research Foundation</h2>
+                
+                <div class="research-questions">
+                    <h3 class="question-title">Core Research Questions</h3>
+                    <div class="question-item primary">
+                        <p><strong>What does it mean to be human—or post-human—within artificial, data-driven planetary ecosystems?</strong></p>
+                    </div>
+                    <div class="question-item">
+                        <p>How can urban systems be extended or redesigned to adapt to non-Earth terrains such as Titan or Mars?</p>
+                    </div>
+                    <div class="question-item">
+                        <p>What kinds of bio-mimetic and machine-nature cohabitation systems could emerge from computationally derived planetary resources?</p>
+                    </div>
+                </div>
+
+                <div class="project-overview">
+                    <h3>Project Overview</h3>
+                    <p>A speculative prototype for a game-based world-building system that envisions robot-driven planetary settlements, built on real-world datasets from extraterrestrial environments. It explores what forms of urban design, environmental response, and synthetic life might emerge in the absence of human-centered planning—while still maintaining human ethical concerns, memory, and agency.</p>
+                </div>
+
+                <div class="socio-technical-problems">
+                    <h3>Socio-Technical Problems</h3>
+                    <div class="question-item">
+                        <p>• Who gets to decide what is "sustainable" beyond Earth?</p>
+                    </div>
+                    <div class="question-item">
+                        <p>• Can robot ecologies co-exist with nature if humans are no longer central?</p>
+                    </div>
+                    <div class="question-item">
+                        <p>• How do datasets drive speculative futures? What assumptions do they encode?</p>
+                    </div>
+                    <div class="question-item">
+                        <p>• Is this a form of terraforming, dataforming, or extractive simulation?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="story-section" id="keywords-fields">
+        <div class="story-container">
+            <div class="story-content">
+                <h3>Keywords</h3>
+                <div class="keywords-grid">
+                    <span class="keyword">Planetary Ecosystems</span>
+                    <span class="keyword">Global Warming</span>
+                    <span class="keyword">Cyborgs</span>
+                    <span class="keyword">Bio-mimicry</span>
+                    <span class="keyword">Synthetic Life</span>
+                    <span class="keyword">Resource Computation</span>
+                </div>
+
+                <h3>Intersecting Fields</h3>
+                <div class="fields-grid">
+                    <div class="field-item">Architecture</div>
+                    <div class="field-item">Computation</div>
+                    <div class="field-item">Astronomy</div>
+                    <div class="field-item">Game Design</div>
+                    <div class="field-item">Planetary Science</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Actor Network Diagram Section -->
+    <section class="actor-network-section" id="actor-network">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Actor Network: Planetary Ecosystems & Temporal Structures</h2>
+                <p class="section-subtitle">Interactive visualization of interconnected systems and temporal cycles</p>
+            </div>
+            <div class="actor-network-container">
+                <iframe 
+                    src="actor_network_diagram.html" 
+                    class="actor-network-iframe"
+                    frameborder="0"
+                    allowfullscreen
+                    sandbox="allow-scripts allow-same-origin">
+                </iframe>
+            </div>
+            <div class="section-description">
+                <p>Explore the complex relationships between planetary ecosystems, technological systems, and temporal structures. This interactive diagram visualizes how different actors and systems interact across various scales of time and space, from geological epochs to computational cycles.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="story-section" id="methods-approach">
+        <div class="story-container">
+            <div class="story-content">
+                <h2 class="section-title">Methods & Approach</h2>
+                
+                <div class="methods-grid">
+                    <div class="method-category">
+                        <h3>Computational Design Experiments</h3>
+                        <ul class="deliverables-list">
+                            <li>Data-driven terrain generation from Titan topography</li>
+                            <li>Simulated microclimate networks based on methane and nitrogen flows</li>
+                            <li>Agent-based robot-nature interaction simulations</li>
+                            <li>Hybrid architectural forms (cyborg-nature structures)</li>
+                            <li>UI mockups for eco-feedback systems</li>
+                        </ul>
+                    </div>
+
+                    <div class="method-category">
+                        <h3>Research Methods</h3>
+                        <p><strong>Quantitative:</strong> Real datasets from NASA/JPL (Titan, Mars topography, atmosphere, etc.), simulation-based systems</p>
+                        <p><strong>Qualitative:</strong> Storytelling, ethnographic speculation, visual world-building</p>
+                        <p><strong>Components:</strong> Primarily computational and visual, with written theory and spatial sketches</p>
+                    </div>
+                </div>
+
+                <div class="drawing-type">
+                    <h3>Drawing Type: Vertical Sectional Datascape</h3>
+                    <div class="research-questions">
+                        <p><strong>Function:</strong></p>
+                        <p>• Maps a new speculative ecology on Titan</p>
+                        <p>• Situates design within planetary data, machine systems, and environmental feedback</p>
+                        <p>• Argues that robotic urbanism and bio-mimicry can be critically co-designed, not simply deployed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="story-section" id="design-tools">
+        <div class="story-container">
+            <div class="story-content">
+                <h2 class="section-title">Design & Tools</h2>
+                
+                <div class="tools-grid">
+                    <div class="tool-category">
+                        <h3>Tools</h3>
+                        <p>Rhino/Grasshopper, Unity/Unreal, QGIS, Open Planetary datasets, AI generative tools</p>
+                    </div>
+                    
+                    <div class="tool-category">
+                        <h3>Theory</h3>
+                        <p>Post-Anthropocentrism, Cyberfeminism, Design Fiction, Bio-Capital</p>
+                    </div>
+                    
+                    <div class="tool-category">
+                        <h3>Design Tactics</h3>
+                        <p>Multi-agent simulation, energy-flow systems, eco-feedback loops</p>
+                    </div>
+                    
+                    <div class="tool-category">
+                        <h3>Aesthetics</h3>
+                        <p>Harsh beauty, atmospheric computing, cosmic urbanism, alien biophilia</p>
+                    </div>
+                </div>
+
+                <div class="visual-representation">
+                    <h3>Visual Representation</h3>
+                    <p>Inspired by machine-generated textures, planetary data maps, AI-randomized urbanism. Aesthetic references: Annihilation, Dune (2021), System Shock interface visuals. Uses speculative visual storytelling to provoke reflection on nonhuman design logic.</p>
+                </div>
+
+                <div class="project-deliverables">
+                    <h3>Project Deliverables</h3>
+                    <div class="deliverables-grid">
+                        <div class="deliverable">Procedural planetary maps</div>
+                        <div class="deliverable">Visual + text-based future scenarios</div>
+                        <div class="deliverable">Game mechanics simulating ecosystem dependencies</div>
+                        <div class="deliverable">Hybrid architectural typologies</div>
+                        <div class="deliverable">Documentation of ethical + technical implications</div>
+                    </div>
+                </div>
+
+                <div class="challenge-section">
+                    <h3>The Challenge</h3>
+                    <div class="research-questions">
+                        <p>• Accessing and integrating planetary data (especially Titan's or Mars's ecosystems)</p>
+                        <p>• Balancing speculative storytelling with rigorous environmental modeling</p>
+                        <p>• Learning procedural modeling + game engine workflows (Unity, Unreal)</p>
+                        <p>• Creating believable yet critical aesthetics</p>
+                        <p>• Positioning work clearly in dialogue with climate justice and decolonial design logics</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="story-section" id="materials-gesture">
+        <div class="story-container">
+            <div class="story-content">
+                <h2 class="section-title">Material Gesture - Techno-ecological Future</h2>
+                
+                <div class="material-gesture">
+                    <h3>Physical Artifacts</h3>
+                    <p>A knolled kit of synthetic ecosystem components, showing how robotic and natural systems intertwine physically. A kinetic breathing sculpture simulating planetary processes driven by real data. A projection or multi-sensory installation that immerses viewers in a post-human ecology.</p>
+                    
+                    <div class="deliverables-grid">
+                        <div class="deliverable">Methane collector spore</div>
+                        <div class="deliverable">Server lichen tile</div>
+                        <div class="deliverable">Bio-synthetic root node</div>
+                        <div class="deliverable">Drone egg shell</div>
+                        <div class="deliverable">Geothermal seed spike</div>
+                    </div>
+                </div>
+
+                <div class="material-composition">
+                    <h3>Material Composition</h3>
+                    <p>Crafted from a mix of recycled plastics, bio-resins, and metallic finishes, these objects materialize the speculative infrastructures of an alien biosphere sustained by cyborg-nature hybrids.</p>
+                </div>
+
+                <div class="rhetorical-function">
+                    <h3>Rhetorical Function</h3>
+                    <p>More than technical demonstrations, these pieces function as rhetorical devices, provoking reflection on humanity's evolving relationship with technology and the environment beyond Earth. They assert a representational position that challenges techno-solutionist narratives of space colonization by foregrounding symbiosis, fragility, and emergent complexity.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="story-section" id="community-context">
+        <div class="story-container">
+            <div class="story-content">
+                <h2 class="section-title">Community & Context</h2>
+                
+                <div class="community-practice">
+                    <h3>Community of Practice</h3>
+                    <p>Studio Folder (Terraforming project): planetary-scale design questions<br>
+                    Kelly and Zach Weinersmith (Soonish) – speculative tech futures<br>
+                    More-than-Human Design: critiquing human exceptionalism<br>
+                    Black Almanac & Satellite Dev projects</p>
+                </div>
+
+                <div class="historical-lineage">
+                    <h3>Historical Lineage</h3>
+                    <div class="research-questions">
+                        <p>• Ghost in the Shell (1978), Blame! manga – post-human, cyborg societies</p>
+                        <p>• NieR:Automata, Block'hood – system-driven ecological storytelling</p>
+                        <p>• Epic Spaceman's marble simulation – visualizing alien logic through data</p>
+                        <p>• Terraforming Mars (board game) – resource speculation in off-world design</p>
+                        <p>• Historical speculative design works by Dunne & Raby and More-than-Human design</p>
+                    </div>
+                </div>
+
+                <div class="situated-technology">
+                    <h3>Situated Technology</h3>
+                    <p>This project aligns with CDP themes of critical technoscience and speculative realism. It operates as both a critique of current planetary data extractivism and a speculative tool for imagining alternative eco-technological futures.</p>
+                </div>
+
+                <div class="rhetorical-argument">
+                    <h3>Rhetorical Argument</h3>
+                    <div class="story-intro-text">
+                        Designing with planetary data is not neutral—it reflects and reproduces worldviews. This project argues that post-human ecosystems must be built ethically, not extractively. By turning robots into agents of bio-mimicry, not just efficiency, the project explores planetary coexistence without human supremacy.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2 class="section-title">Columbia GSAPP</h2>
+                    <p class="contact-detail">Computational Design Practices</p>
+                    <p class="contact-detail">Colloquium 1 | Summer 2025</p>
+                    <p class="contact-detail">Sriya Thotakura</p>
+                    <div class="contact-email">
+                        <a href="mailto:sriyagayathri007@gmail.com" class="contact-link">sriyagayathri007@gmail.com</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <div class="footer-text">
+                        <div class="footer-main">Columbia GSAPP</div>
+                        <div class="footer-sub">Computational Design Practices</div>
+                        <div class="footer-sub">Colloquium 1 | Summer 2025</div>
+                        <div class="footer-author">Sriya Thotakura</div>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">Privacy</a>
+                    <a href="#" class="footer-link">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Three.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    
+    <!-- Architectural Visualization -->
+    <script src="architectural-visualization.js"></script>
+    
+    <!-- Experience Script -->
+    <script src="experience.js"></script>
+    
+    <!-- Canvas for 3D visualization -->
+    <div id="architecturalSteps" class="architectural-steps">
+        <canvas id="heroCanvas"></canvas>
+    </div>
+    
+    <!-- Experience script is now loaded from experience.js -->
+    <script src="lusion-script.js"></script>
+    <script>
+        // Field Intersection Diagram loading handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const diagramIframe = document.querySelector('#field-intersection iframe');
+            
+            if (diagramIframe) {
+                // Add loaded class when iframe is fully loaded
+                diagramIframe.addEventListener('load', function() {
+                    this.classList.add('loaded');
+                    
+                    // Additional check for content
+                    try {
+                        // Try to access the iframe content
+                        const iframeDoc = this.contentDocument || this.contentWindow.document;
+                        if (iframeDoc.readyState === 'complete') {
+                            this.style.opacity = '1';
+                        }
+                    } catch (e) {
+                        // Handle cross-origin restrictions
+                        this.style.opacity = '1';
+                    }
+                });
+                
+                // Set initial opacity to 0 (will be transitioned in by CSS)
+                diagramIframe.style.opacity = '0';
+            }
+        });
+    </script>
+</body>
+</html>

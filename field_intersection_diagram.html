@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Intersection Diagram</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(ellipse at top, #0f0f23 0%, #1a1a2e 40%, #16213e 70%, #0f0f23 100%);
+            overflow: hidden;
+            color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 119, 198, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(119, 255, 198, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #diagram-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .field-circle {
+            position: absolute;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            z-index: 3;
+            background: rgba(255, 255, 255, 0.02);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .field-circle:hover {
+            transform: scale(1.02) translateY(-5px);
+            z-index: 10;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        #architecture {
+            border-color: rgba(255, 138, 101, 0.6);
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #architecture:hover {
+            border-color: rgba(255, 138, 101, 0.9);
+            box-shadow: 
+                0 20px 60px rgba(255, 138, 101, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        #computation {
+            border-color: rgba(74, 222, 128, 0.6);
+            bottom: 60px;
+            left: 180px;
+        }
+
+        #computation:hover {
+            border-color: rgba(74, 222, 128, 0.9);
+            box-shadow: 
+                0 20px 60px rgba(74, 222, 128, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        #planetary {
+            border-color: rgba(96, 165, 250, 0.6);
+            bottom: 60px;
+            right: 180px;
+        }
+
+        #planetary:hover {
+            border-color: rgba(96, 165, 250, 0.9);
+            box-shadow: 
+                0 20px 60px rgba(96, 165, 250, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .field-content {
+            text-align: center;
+            max-width: 280px;
+            z-index: 1;
+        }
+
+        .field-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+
+        .field-subtitle {
+            font-size: 13px;
+            font-weight: 400;
+            opacity: 0.7;
+            margin-bottom: 16px;
+            letter-spacing: 0.01em;
+        }
+
+        .concept-tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 4px 10px;
+            margin: 3px;
+            border-radius: 16px;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .concept-tag:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .intersection-zone {
+            position: absolute;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 500;
+            text-align: center;
+            padding: 16px;
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            z-index: 5;
+        }
+
+        .intersection-zone:hover {
+            transform: scale(1.05) translateY(-3px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 16px 48px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            z-index: 15;
+        }
+
+        #arch-comp {
+            width: 160px;
+            height: 160px;
+            top: 210px;
+            left: 320px;
+            background: linear-gradient(135deg, rgba(255, 138, 101, 0.1), rgba(74, 222, 128, 0.1));
+            border-color: rgba(255, 184, 0, 0.3);
+        }
+
+        #arch-planet {
+            width: 160px;
+            height: 160px;
+            top: 210px;
+            right: 320px;
+            background: linear-gradient(135deg, rgba(255, 138, 101, 0.1), rgba(96, 165, 250, 0.1));
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        #comp-planet {
+            width: 160px;
+            height: 160px;
+            bottom: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), rgba(96, 165, 250, 0.1));
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        #center-intersection {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, 
+                rgba(255, 138, 101, 0.08), 
+                rgba(74, 222, 128, 0.08), 
+                rgba(96, 165, 250, 0.08)
+            );
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 9px;
+            z-index: 20;
+            border-radius: 50%;
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.15), 
+                rgba(255, 255, 255, 0.4), 
+                rgba(255, 255, 255, 0.15), 
+                transparent
+            );
+            transform-origin: left center;
+            animation: pulse 6s infinite ease-in-out;
+            z-index: 1;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 0.2;
+                transform: scaleY(1);
+            }
+            50% { 
+                opacity: 0.6;
+                transform: scaleY(1.5);
+            }
+        }
+
+        #info-panel {
+            position: fixed;
+            top: 32px;
+            left: 32px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 360px;
+            box-shadow: 
+                0 16px 48px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        #info-panel h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+
+        #selected-info {
+            font-size: 14px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        #methodology-panel {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 320px;
+            box-shadow: 
+                0 16px 48px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        #methodology-panel h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .floating-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            animation: float 12s infinite ease-in-out;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px) scale(1);
+                opacity: 0.4;
+            }
+            25% { 
+                transform: translateY(-15px) translateX(5px) scale(1.2);
+                opacity: 0.7;
+            }
+            50% { 
+                transform: translateY(-8px) translateX(-3px) scale(0.8);
+                opacity: 0.5;
+            }
+            75% { 
+                transform: translateY(-20px) translateX(8px) scale(1.1);
+                opacity: 0.6;
+            }
+        }
+
+        .intersection-zone strong {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .intersection-zone ul {
+            list-style: none;
+            font-size: 10px;
+            line-height: 1.4;
+            opacity: 0.8;
+        }
+
+        .intersection-zone li::before {
+            content: '·';
+            margin-right: 6px;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 1200px) {
+            .field-circle {
+                width: 320px;
+                height: 320px;
+            }
+            
+            .intersection-zone {
+                width: 140px;
+                height: 140px;
+                font-size: 10px;
+                padding: 12px;
+            }
+            
+            #center-intersection {
+                width: 80px;
+                height: 80px;
+                font-size: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="diagram-container">
+        <!-- Main Field Circles -->
+        <div class="field-circle" id="architecture">
+            <div class="field-content">
+                <div class="field-title">Architecture & Urbanism</div>
+                <div class="field-subtitle">Spatial Design & City Systems</div>
+                <div class="concept-tag">Built Environment</div>
+                <div class="concept-tag">Urban Planning</div>
+                <div class="concept-tag">Spatial Theory</div>
+                <div class="concept-tag">Design Thinking</div>
+            </div>
+        </div>
+
+        <div class="field-circle" id="computation">
+            <div class="field-content">
+                <div class="field-title">Computation & Game Design</div>
+                <div class="field-subtitle">Interactive Systems & Digital Worlds</div>
+                <div class="concept-tag">Algorithms</div>
+                <div class="concept-tag">Virtual Environments</div>
+                <div class="concept-tag">User Experience</div>
+                <div class="concept-tag">Simulation</div>
+            </div>
+        </div>
+
+        <div class="field-circle" id="planetary">
+            <div class="field-content">
+                <div class="field-title">Planetary Science & Astronomy</div>
+                <div class="field-subtitle">Cosmic Systems & Earth Sciences</div>
+                <div class="concept-tag">Planetary Dynamics</div>
+                <div class="concept-tag">Astrobiology</div>
+                <div class="concept-tag">Climate Systems</div>
+                <div class="concept-tag">Space Exploration</div>
+            </div>
+        </div>
+
+        <!-- Intersection Zones -->
+        <div class="intersection-zone" id="arch-comp">
+            <div>
+                <strong>Computational Architecture</strong>
+                <ul>
+                    <li>Parametric Design</li>
+                    <li>Smart Cities</li>
+                    <li>Digital Fabrication</li>
+                    <li>Urban Simulation</li>
+                    <li>VR/AR Environments</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="intersection-zone" id="arch-planet">
+            <div>
+                <strong>Planetary Urbanism</strong>
+                <ul>
+                    <li>Climate-Responsive Design</li>
+                    <li>Astro-Architecture</li>
+                    <li>Geological Urbanism</li>
+                    <li>Space Habitats</li>
+                    <li>Ecological Cities</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="intersection-zone" id="comp-planet">
+            <div>
+                <strong>Computational Astronomy</strong>
+                <ul>
+                    <li>N-Body Simulations</li>
+                    <li>Exoplanet Detection</li>
+                    <li>Space Mission Games</li>
+                    <li>Climate Modeling</li>
+                    <li>Astronomical Visualization</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="intersection-zone" id="center-intersection">
+            <div>
+                <strong>Planetary Design Computation</strong>
+                <div style="font-size: 8px; opacity: 0.8; margin-top: 4px;">
+                    Multi-scale modeling of inhabited worlds
+                </div>
+            </div>
+        </div>
+
+        <!-- Connection Lines -->
+        <div class="connection-line" id="line1"></div>
+        <div class="connection-line" id="line2"></div>
+        <div class="connection-line" id="line3"></div>
+        <div class="connection-line" id="line4"></div>
+        <div class="connection-line" id="line5"></div>
+        <div class="connection-line" id="line6"></div>
+    </div>
+
+    <div id="info-panel">
+        <h3>Field Intersection Analysis</h3>
+        <p id="selected-info">Click on any field or intersection zone to explore the convergence of disciplines and emerging hybrid methodologies.</p>
+        <div id="projects-list"></div>
+    </div>
+
+    <div id="methodology-panel">
+        <h4>Interdisciplinary Methods</h4>
+        <div class="concept-tag">Systems Thinking</div>
+        <div class="concept-tag">Computational Modeling</div>
+        <div class="concept-tag">Spatial Analysis</div>
+        <div class="concept-tag">Data Visualization</div>
+        <div class="concept-tag">Scenario Planning</div>
+        <div class="concept-tag">Design Fiction</div>
+    </div>
+
+    <script>
+        const fieldData = {
+            architecture: {
+                title: "Architecture & Urbanism",
+                description: "The design of built environments from individual buildings to entire cities, focusing on spatial relationships, human experience, and sustainable development.",
+                methods: ["Site Analysis", "Design Thinking", "Urban Planning", "Environmental Design", "Social Architecture"],
+                projects: ["Smart City Infrastructure", "Climate-Adaptive Buildings", "Urban Data Visualization", "Parametric Urban Design"]
+            },
+            computation: {
+                title: "Computation & Game Design",
+                description: "The creation of interactive digital systems, algorithms, and virtual environments that engage users through gameplay, simulation, and immersive experiences.",
+                methods: ["Algorithmic Design", "User Experience Research", "Interactive Prototyping", "Game Mechanics", "Virtual World Building"],
+                projects: ["Procedural City Generation", "Climate Change Games", "Space Exploration Simulators", "Urban Planning Games"]
+            },
+            planetary: {
+                title: "Planetary Science & Astronomy",
+                description: "The study of planets, stars, and cosmic systems, including Earth's climate, geology, and the search for life beyond our planet.",
+                methods: ["Observational Astronomy", "Planetary Modeling", "Climate Analysis", "Astrobiology", "Space Mission Design"],
+                projects: ["Exoplanet Habitability Models", "Mars Settlement Planning", "Earth System Monitoring", "Asteroid Impact Simulations"]
+            }
+        };
+
+        const intersectionData = {
+            "arch-comp": {
+                title: "Computational Architecture",
+                description: "The fusion of architectural design with computational methods, creating responsive, intelligent built environments.",
+                examples: ["Parametric building design using algorithms", "Smart city sensors and urban informatics", "VR/AR architectural visualization", "Computational urban planning tools", "Digital fabrication in construction"],
+                keyPractitioners: ["Greg Lynn", "Lars Spuybroek", "Kas Oosterhuis"]
+            },
+            "arch-planet": {
+                title: "Planetary Urbanism",
+                description: "Architecture and urban design informed by planetary-scale thinking and astronomical perspectives.",
+                examples: ["Climate-responsive urban design", "Space habitat architecture", "Geological constraints in city planning", "Astro-biological design principles", "Planetary settlement planning"],
+                keyPractitioners: ["Benjamin Bratton", "Teddy Cruz", "Mitchell Joachim"]
+            },
+            "comp-planet": {
+                title: "Computational Astronomy",
+                description: "The use of computational methods and game design principles to understand and visualize cosmic phenomena.",
+                examples: ["N-body gravitational simulations", "Exoplanet detection algorithms", "Space exploration strategy games", "Climate modeling software", "Citizen science astronomy games"],
+                keyPractitioners: ["Neil deGrasse Tyson", "Katie Mack", "Chris Hecker"]
+            },
+            "center-intersection": {
+                title: "Planetary Design Computation",
+                description: "The convergence of all three fields: using computational methods to design human settlements that respond to planetary and cosmic forces.",
+                examples: ["Multi-scale Earth system models for urban planning", "Gamified planetary terraforming simulations", "Computational astrobiology for habitat design", "Interactive climate futures for city planning", "Space-based solar power urban integration"],
+                keyPractitioners: ["Emerging interdisciplinary researchers", "NASA Ames Research Center", "MIT Senseable City Lab"]
+            }
+        };
+
+        function createConnectionLines() {
+            const container = document.getElementById('diagram-container');
+            
+            const connections = [
+                { from: 'architecture', to: 'computation', lineId: 'line1' },
+                { from: 'architecture', to: 'planetary', lineId: 'line2' },
+                { from: 'computation', to: 'planetary', lineId: 'line3' },
+                { from: 'arch-comp', to: 'center-intersection', lineId: 'line4' },
+                { from: 'arch-planet', to: 'center-intersection', lineId: 'line5' },
+                { from: 'comp-planet', to: 'center-intersection', lineId: 'line6' }
+            ];
+
+            connections.forEach((conn, index) => {
+                const line = document.getElementById(conn.lineId);
+                const fromEl = document.getElementById(conn.from);
+                const toEl = document.getElementById(conn.to);
+                
+                if (fromEl && toEl) {
+                    const fromRect = fromEl.getBoundingClientRect();
+                    const toRect = toEl.getBoundingClientRect();
+                    const containerRect = container.getBoundingClientRect();
+                    
+                    const fromX = fromRect.left + fromRect.width/2 - containerRect.left;
+                    const fromY = fromRect.top + fromRect.height/2 - containerRect.top;
+                    const toX = toRect.left + toRect.width/2 - containerRect.left;
+                    const toY = toRect.top + toRect.height/2 - containerRect.top;
+                    
+                    const dx = toX - fromX;
+                    const dy = toY - fromY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                    
+                    line.style.width = distance + 'px';
+                    line.style.left = fromX + 'px';
+                    line.style.top = fromY + 'px';
+                    line.style.transform = `rotate(${angle}deg)`;
+                    line.style.animationDelay = (index * 1) + 's';
+                }
+            });
+        }
+
+        function selectElement(elementId) {
+            const infoPanel = document.getElementById('selected-info');
+            const projectsList = document.getElementById('projects-list');
+            
+            if (fieldData[elementId]) {
+                const field = fieldData[elementId];
+                infoPanel.innerHTML = `
+                    <strong>${field.title}</strong><br><br>
+                    ${field.description}<br><br>
+                    <strong>Key Methods:</strong><br>
+                    ${field.methods.map(method => `<span class="concept-tag">${method}</span>`).join('')}
+                `;
+                projectsList.innerHTML = `
+                    <br><strong>Example Projects:</strong><br>
+                    ${field.projects.map(project => `• ${project}`).join('<br>')}
+                `;
+            } else if (intersectionData[elementId]) {
+                const intersection = intersectionData[elementId];
+                infoPanel.innerHTML = `
+                    <strong>${intersection.title}</strong><br><br>
+                    ${intersection.description}<br><br>
+                    <strong>Examples:</strong><br>
+                    ${intersection.examples.slice(0, 3).map(example => `• ${example}`).join('<br>')}
+                `;
+                projectsList.innerHTML = `
+                    <br><strong>Key Practitioners:</strong><br>
+                    ${intersection.keyPractitioners.map(practitioner => `• ${practitioner}`).join('<br>')}
+                `;
+            }
+        }
+
+        function createFloatingParticles() {
+            const container = document.getElementById('diagram-container');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'floating-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 12 + 's';
+                particle.style.animationDuration = (8 + Math.random() * 6) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('architecture').addEventListener('click', () => selectElement('architecture'));
+        document.getElementById('computation').addEventListener('click', () => selectElement('computation'));
+        document.getElementById('planetary').addEventListener('click', () => selectElement('planetary'));
+        document.getElementById('arch-comp').addEventListener('click', () => selectElement('arch-comp'));
+        document.getElementById('arch-planet').addEventListener('click', () => selectElement('arch-planet'));
+        document.getElementById('comp-planet').addEventListener('click', () => selectElement('comp-planet'));
+        document.getElementById('center-intersection').addEventListener('click', () => selectElement('center-intersection'));
+
+        // Initialize
+        setTimeout(() => {
+            createConnectionLines();
+            createFloatingParticles();
+        }, 100);
+    </script>
+</body>
+</html>

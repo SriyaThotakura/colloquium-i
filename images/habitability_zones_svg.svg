@@ -1,0 +1,333 @@
+<svg viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Star gradients -->
+    <radialGradient id="sunGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff5b4"/>
+      <stop offset="30%" stop-color="#ffcc02"/>
+      <stop offset="70%" stop-color="#ff9500"/>
+      <stop offset="100%" stop-color="#ff6b35"/>
+    </radialGradient>
+    
+    <radialGradient id="redDwarfGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff9999"/>
+      <stop offset="50%" stop-color="#ff6b6b"/>
+      <stop offset="100%" stop-color="#d63031"/>
+    </radialGradient>
+    
+    <!-- Habitability zone gradients -->
+    <linearGradient id="habitableZoneGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00b894" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#00cec9" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#74b9ff" stop-opacity="0.3"/>
+    </linearGradient>
+    
+    <linearGradient id="tooHotGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff6b35" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#ff6b35" stop-opacity="0.1"/>
+    </linearGradient>
+    
+    <linearGradient id="tooColdGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#74b9ff" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#a29bfe" stop-opacity="0.6"/>
+    </linearGradient>
+    
+    <!-- Planet gradients -->
+    <radialGradient id="trappist1eGradient" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#00b894"/>
+      <stop offset="40%" stop-color="#00a085"/>
+      <stop offset="80%" stop-color="#636e72"/>
+      <stop offset="100%" stop-color="#2d3436"/>
+    </radialGradient>
+    
+    <radialGradient id="kepler186fGradient" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#74b9ff"/>
+      <stop offset="40%" stop-color="#0984e3"/>
+      <stop offset="80%" stop-color="#2d3436"/>
+      <stop offset="100%" stop-color="#636e72"/>
+    </radialGradient>
+    
+    <radialGradient id="lhs1140bGradient" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#fd79a8"/>
+      <stop offset="40%" stop-color="#e84393"/>
+      <stop offset="80%" stop-color="#2d3436"/>
+      <stop offset="100%" stop-color="#636e72"/>
+    </radialGradient>
+    
+    <radialGradient id="earthGradient" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#00cec9"/>
+      <stop offset="30%" stop-color="#00b894"/>
+      <stop offset="60%" stop-color="#0984e3"/>
+      <stop offset="100%" stop-color="#2d3436"/>
+    </radialGradient>
+    
+    <!-- Filters -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="shadow">
+      <feDropShadow dx="3" dy="3" stdDeviation="4" flood-opacity="0.4"/>
+    </filter>
+    
+    <!-- Orbital path pattern -->
+    <pattern id="orbitPattern" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+      <circle cx="5" cy="5" r="1" fill="#74b9ff" opacity="0.3"/>
+    </pattern>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1400" height="900" fill="#0a0a0a"/>
+  
+  <!-- Stars -->
+  <circle cx="120" cy="80" r="1" fill="#ffffff" opacity="0.8"/>
+  <circle cx="250" cy="60" r="1.5" fill="#ffffff" opacity="0.6"/>
+  <circle cx="380" cy="90" r="1" fill="#ffffff" opacity="0.9"/>
+  <circle cx="520" cy="70" r="1.5" fill="#ffffff" opacity="0.7"/>
+  <circle cx="680" cy="85" r="1" fill="#ffffff" opacity="0.8"/>
+  <circle cx="820" cy="65" r="1.5" fill="#ffffff" opacity="0.6"/>
+  <circle cx="980" cy="95" r="1" fill="#ffffff" opacity="0.9"/>
+  <circle cx="1120" cy="75" r="1.5" fill="#ffffff" opacity="0.7"/>
+  <circle cx="1280" cy="85" r="1" fill="#ffffff" opacity="0.8"/>
+  
+  <!-- Title -->
+  <text x="700" y="50" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="28" font-weight="bold">
+    Planetary Habitability Zones
+  </text>
+  <text x="700" y="75" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="14">
+    The "Goldilocks Zone" - Not Too Hot, Not Too Cold, Just Right
+  </text>
+  
+  <!-- Solar System Reference (Top) -->
+  <g id="solar-system-reference" transform="translate(100, 120)">
+    <rect x="0" y="0" width="1200" height="120" fill="rgba(15, 23, 42, 0.8)" stroke="rgba(255, 204, 2, 0.3)" stroke-width="2" rx="15"/>
+    
+    <!-- Sun -->
+    <circle cx="80" cy="60" r="25" fill="url(#sunGradient)" filter="url(#glow)"/>
+    <text x="80" y="95" text-anchor="middle" fill="#ffcc02" font-family="Arial, sans-serif" font-size="12" font-weight="bold">SUN</text>
+    
+    <!-- Habitability zones -->
+    <rect x="150" y="30" width="80" height="60" fill="url(#tooHotGradient)" rx="5"/>
+    <text x="190" y="25" text-anchor="middle" fill="#ff6b35" font-family="Arial, sans-serif" font-size="10" font-weight="bold">TOO HOT</text>
+    <text x="190" y="105" text-anchor="middle" fill="#ff6b35" font-family="Arial, sans-serif" font-size="9">Venus Zone</text>
+    
+    <rect x="230" y="20" width="120" height="80" fill="url(#habitableZoneGradient)" rx="8"/>
+    <text x="290" y="15" text-anchor="middle" fill="#00b894" font-family="Arial, sans-serif" font-size="12" font-weight="bold">HABITABLE ZONE</text>
+    <text x="290" y="110" text-anchor="middle" fill="#00b894" font-family="Arial, sans-serif" font-size="9">Liquid Water Possible</text>
+    
+    <rect x="350" y="30" width="200" height="60" fill="url(#tooColdGradient)" rx="5"/>
+    <text x="450" y="25" text-anchor="middle" fill="#74b9ff" font-family="Arial, sans-serif" font-size="10" font-weight="bold">TOO COLD</text>
+    <text x="450" y="105" text-anchor="middle" fill="#74b9ff" font-family="Arial, sans-serif" font-size="9">Frozen Surface</text>
+    
+    <!-- Planets -->
+    <circle cx="180" cy="60" r="8" fill="#ff6b35"/>
+    <text x="180" y="80" text-anchor="middle" fill="#ff6b35" font-family="Arial, sans-serif" font-size="8">Venus</text>
+    
+    <circle cx="280" cy="60" r="10" fill="url(#earthGradient)"/>
+    <text x="280" y="80" text-anchor="middle" fill="#00b894" font-family="Arial, sans-serif" font-size="8" font-weight="bold">Earth</text>
+    
+    <circle cx="380" cy="60" r="7" fill="#d63031"/>
+    <text x="380" y="80" text-anchor="middle" fill="#d63031" font-family="Arial, sans-serif" font-size="8">Mars</text>
+    
+    <!-- Distance markers -->
+    <text x="600" y="30" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="10">Distance from Star:</text>
+    <text x="600" y="45" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">Venus: 0.7 AU</text>
+    <text x="600" y="60" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">Earth: 1.0 AU</text>
+    <text x="600" y="75" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">Mars: 1.5 AU</text>
+  </g>
+  
+  <!-- TRAPPIST-1 System -->
+  <g id="trappist1-system" transform="translate(100, 280)">
+    <rect x="0" y="0" width="380" height="280" fill="rgba(15, 23, 42, 0.8)" stroke="rgba(214, 48, 49, 0.3)" stroke-width="2" rx="15"/>
+    
+    <!-- TRAPPIST-1 star -->
+    <circle cx="60" cy="140" r="20" fill="url(#redDwarfGradient)" filter="url(#glow)"/>
+    <text x="60" y="175" text-anchor="middle" fill="#ff6b6b" font-family="Arial, sans-serif" font-size="12" font-weight="bold">TRAPPIST-1</text>
+    <text x="60" y="190" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">Ultra-cool dwarf</text>
+    
+    <!-- Habitability zone -->
+    <rect x="100" y="90" width="80" height="100" fill="url(#habitableZoneGradient)" rx="8" opacity="0.8"/>
+    <text x="140" y="85" text-anchor="middle" fill="#00b894" font-family="Arial, sans-serif" font-size="10" font-weight="bold">HABITABLE</text>
+    
+    <!-- TRAPPIST-1 planets -->
+    <g id="trappist-planets">
+      <!-- Planet b (too hot) -->
+      <circle cx="95" cy="140" r="6" fill="#ff6b35" opacity="0.8"/>
+      <text x="95" y="155" text-anchor="middle" fill="#ff6b35" font-family="Arial, sans-serif" font-size="7">b</text>
+      
+      <!-- Planet c (too hot) -->
+      <circle cx="110" cy="140" r="6" fill="#ff6b35" opacity="0.6"/>
+      <text x="110" y="155" text-anchor="middle" fill="#ff6b35" font-family="Arial, sans-serif" font-size="7">c</text>
+      
+      <!-- Planet d (habitable) -->
+      <circle cx="125" cy="140" r="7" fill="#74b9ff"/>
+      <text x="125" y="155" text-anchor="middle" fill="#74b9ff" font-family="Arial, sans-serif" font-size="7">d</text>
+      
+      <!-- Planet e (habitable - featured) -->
+      <circle cx="145" cy="140" r="12" fill="url(#trappist1eGradient)" filter="url(#glow)"/>
+      <circle cx="145" cy="140" r="18" fill="none" stroke="#00b894" stroke-width="2" opacity="0.6"/>
+      <text x="145" y="165" text-anchor="middle" fill="#00b894" font-family="Arial, sans-serif" font-size="8" font-weight="bold">e</text>
+      
+      <!-- Planet f (habitable) -->
+      <circle cx="165" cy="140" r="8" fill="#00cec9"/>
+      <text x="165" y="155" text-anchor="middle" fill="#00cec9" font-family="Arial, sans-serif" font-size="7">f</text>
+      
+      <!-- Planet g (too cold) -->
+      <circle cx="185" cy="140" r="7" fill="#74b9ff" opacity="0.6"/>
+      <text x="185" y="155" text-anchor="middle" fill="#74b9ff" font-family="Arial, sans-serif" font-size="7">g</text>
+      
+      <!-- Planet h (too cold) -->
+      <circle cx="205" cy="140" r="6" fill="#a29bfe" opacity="0.4"/>
+      <text x="205" y="155" text-anchor="middle" fill="#a29bfe" font-family="Arial, sans-serif" font-size="7">h</text>
+    </g>
+    
+    <!-- TRAPPIST-1e details -->
+    <rect x="200" y="20" width="170" height="120" fill="rgba(0, 184, 148, 0.1)" stroke="rgba(0, 184, 148, 0.3)" stroke-width="1" rx="8"/>
+    <text x="285" y="35" text-anchor="middle" fill="#00b894" font-family="Arial, sans-serif" font-size="12" font-weight="bold">TRAPPIST-1e</text>
+    <text x="210" y="55" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">• Size: 0.91 Earth radii</text>
+    <text x="210" y="70" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">• Mass: 0.77 Earth masses</text>
+    <text x="210" y="85" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">• Distance: 0.028 AU</text>
+    <text x="210" y="100" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">• Period: 6.1 days</text>
+    <text x="210" y="115" fill="#00b894" font-family="Arial, sans-serif" font-size="9" font-weight="bold">• Potentially rocky</text>
+    <text x="210" y="130" fill="#00b894" font-family="Arial, sans-serif" font-size="9" font-weight="bold">• May have atmosphere</text>
+    
+    <!-- System stats -->
+    <text x="20" y="220" fill="#ff6b6b" font-family="Arial, sans-serif" font-size="11" font-weight="bold">39 light-years away</text>
+    <text x="20" y="240" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">7 terrestrial planets</text>
+    <text x="20" y="255" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">3 in habitable zone</text>
+  </g>
+  
+  <!-- Kepler-186f System -->
+  <g id="kepler186f-system" transform="translate(510, 280)">
+    <rect x="0" y="0" width="380" height="280" fill="rgba(15, 23, 42, 0.8)" stroke="rgba(116, 185, 255, 0.3)" stroke-width="2" rx="15"/>
+    
+    <!-- Kepler-186 star -->
+    <circle cx="60" cy="140" r="18" fill="url(#redDwarfGradient)" filter="url(#glow)" opacity="0.9"/>
+    <text x="60" y="175" text-anchor="middle" fill="#ff6b6b" font-family="Arial, sans-serif" font-size="12" font-weight="bold">Kepler-186</text>
+    <text x="60" y="190" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">Red dwarf</text>
+    
+    <!-- Habitability zone -->
+    <rect x="180" y="90" width="70" height="100" fill="url(#habitableZoneGradient)" rx="8" opacity="0.8"/>
+    <text x="215" y="85" text-anchor="middle" fill="#00b894" font-family="Arial, sans-serif" font-size="10" font-weight="bold">HABITABLE</text>
+    
+    <!-- Kepler-186 planets -->
+    <g id="kepler-planets">
+      <!-- Inner planets (too hot) -->
+      <circle cx="100" cy="130" r="5" fill="#ff6b35" opacity="0.8"/>
+      <text x="100" y="145" text-anchor="middle" fill="#ff6b35" font-family="Arial, sans-serif" font-size="7">b</text>
+      
+      <circle cx="120" cy="135" r="6" fill="#ff6b35" opacity="0.7"/>
+      <text x="120" y="150" text-anchor="middle" fill="#ff6b35" font-family="Arial, sans-serif" font-size="7">c</text>
+      
+      <circle cx="140" cy="140" r="7" fill="#ff9500" opacity="0.6"/>
+      <text x="140" y="155" text-anchor="middle" fill="#ff9500" font-family="Arial, sans-serif" font-size="7">d</text>
+      
+      <circle cx="160" cy="145" r="8" fill="#ffcc02" opacity="0.5"/>
+      <text x="160" y="160" text-anchor="middle" fill="#ffcc02" font-family="Arial, sans-serif" font-size="7">e</text>
+      
+      <!-- Kepler-186f (habitable - featured) -->
+      <circle cx="210" cy="140" r="12" fill="url(#kepler186fGradient)" filter="url(#glow)"/>
+      <circle cx="210" cy="140" r="18" fill="none" stroke="#74b9ff" stroke-width="2" opacity="0.6"/>
+      <text x="210" y="165" text-anchor="middle" fill="#74b9ff" font-family="Arial, sans-serif" font-size="8" font-weight="bold">f</text>
+    </g>
+    
+    <!-- Kepler-186f details -->
+    <rect x="260" y="20" width="110" height="120" fill="rgba(116, 185, 255, 0.1)" stroke="rgba(116, 185, 255, 0.3)" stroke-width="1" rx="8"/>
+    <text x="315" y="35" text-anchor="middle" fill="#74b9ff" font-family="Arial, sans-serif" font-size="11" font-weight="bold">Kepler-186f</text>
+    <text x="270" y="55" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">• Size: 1.11 Earth radii</text>
+    <text x="270" y="70" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">• Distance: 0.43 AU</text>
+    <text x="270" y="85" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">• Period: 130 days</text>
+    <text x="270" y="100" fill="#74b9ff" font-family="Arial, sans-serif" font-size="8" font-weight="bold">• First Earth-size</text>
+    <text x="270" y="115" fill="#74b9ff" font-family="Arial, sans-serif" font-size="8" font-weight="bold">• In habitable zone</text>
+    <text x="270" y="130" fill="#74b9ff" font-family="Arial, sans-serif" font-size="8" font-weight="bold">• Rocky composition</text>
+    
+    <!-- System stats -->
+    <text x="20" y="220" fill="#74b9ff" font-family="Arial, sans-serif" font-size="11" font-weight="bold">500 light-years away</text>
+    <text x="20" y="240" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">5 known planets</text>
+    <text x="20" y="255" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">First Earth-size discovery</text>
+  </g>
+  
+  <!-- LHS 1140b System -->
+  <g id="lhs1140b-system" transform="translate(920, 280)">
+    <rect x="0" y="0" width="380" height="280" fill="rgba(15, 23, 42, 0.8)" stroke="rgba(253, 121, 168, 0.3)" stroke-width="2" rx="15"/>
+    
+    <!-- LHS 1140 star -->
+    <circle cx="60" cy="140" r="16" fill="url(#redDwarfGradient)" filter="url(#glow)" opacity="0.8"/>
+    <text x="60" y="175" text-anchor="middle" fill="#ff6b6b" font-family="Arial, sans-serif" font-size="12" font-weight="bold">LHS 1140</text>
+    <text x="60" y="190" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">M dwarf</text>
+    
+    <!-- Habitability zone -->
+    <rect x="120" y="90" width="60" height="100" fill="url(#habitableZoneGradient)" rx="8" opacity="0.8"/>
+    <text x="150" y="85" text-anchor="middle" fill="#00b894" font-family="Arial, sans-serif" font-size="10" font-weight="bold">HABITABLE</text>
+    
+    <!-- LHS 1140b (featured) -->
+    <circle cx="150" cy="140" r="14" fill="url(#lhs1140bGradient)" filter="url(#glow)"/>
+    <circle cx="150" cy="140" r="20" fill="none" stroke="#fd79a8" stroke-width="2" opacity="0.6"/>
+    <text x="150" y="170" text-anchor="middle" fill="#fd79a8" font-family="Arial, sans-serif" font-size="10" font-weight="bold">LHS 1140b</text>
+    
+    <!-- Potential c planet -->
+    <circle cx="200" cy="140" r="8" fill="#a29bfe" opacity="0.6"/>
+    <text x="200" y="155" text-anchor="middle" fill="#a29bfe" font-family="Arial, sans-serif" font-size="7">c?</text>
+    
+    <!-- LHS 1140b details -->
+    <rect x="220" y="20" width="150" height="140" fill="rgba(253, 121, 168, 0.1)" stroke="rgba(253, 121, 168, 0.3)" stroke-width="1" rx="8"/>
+    <text x="295" y="35" text-anchor="middle" fill="#fd79a8" font-family="Arial, sans-serif" font-size="11" font-weight="bold">LHS 1140b</text>
+    <text x="230" y="55" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">• Size: 1.73 Earth radii</text>
+    <text x="230" y="70" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">• Mass: 6.98 Earth masses</text>
+    <text x="230" y="85" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">• Distance: 0.09 AU</text>
+    <text x="230" y="100" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">• Period: 24.7 days</text>
+    <text x="230" y="115" fill="#fd79a8" font-family="Arial, sans-serif" font-size="8" font-weight="bold">• Super-Earth</text>
+    <text x="230" y="130" fill="#fd79a8" font-family="Arial, sans-serif" font-size="8" font-weight="bold">• Dense atmosphere</text>
+    <text x="230" y="145" fill="#fd79a8" font-family="Arial, sans-serif" font-size="8" font-weight="bold">• JWST target</text>
+    
+    <!-- System stats -->
+    <text x="20" y="220" fill="#fd79a8" font-family="Arial, sans-serif" font-size="11" font-weight="bold">41 light-years away</text>
+    <text x="20" y="240" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">Nearby system</text>
+    <text x="20" y="255" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="9">Atmospheric studies possible</text>
+  </g>
+  
+  <!-- Habitability Factors -->
+  <g id="habitability-factors" transform="translate(100, 590)">
+    <rect x="0" y="0" width="1200" height="180" fill="rgba(15, 23, 42, 0.8)" stroke="rgba(0, 206, 201, 0.3)" stroke-width="2" rx="15"/>
+    
+    <text x="600" y="30" text-anchor="middle" fill="#00cec9" font-family="Arial, sans-serif" font-size="18" font-weight="bold">
+      Key Habitability Factors
+    </text>
+    
+    <!-- Factor grid -->
+    <g id="factors-grid">
+      <!-- Liquid Water -->
+      <g transform="translate(50, 50)">
+        <circle cx="25" cy="25" r="20" fill="rgba(116, 185, 255, 0.2)" stroke="#74b9ff" stroke-width="2"/>
+        <text x="25" y="30" text-anchor="middle" fill="#74b9ff" font-family="Arial, sans-serif" font-size="12">💧</text>
+        <text x="25" y="55" text-anchor="middle" fill="#74b9ff" font-family="Arial, sans-serif" font-size="10" font-weight="bold">Liquid Water</text>
+        <text x="25" y="70" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">Surface temperature</text>
+        <text x="25" y="82" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">0-100°C</text>
+      </g>
+      
+      <!-- Atmosphere -->
+      <g transform="translate(200, 50)">
+        <circle cx="25" cy="25" r="20" fill="rgba(0, 184, 148, 0.2)" stroke="#00b894" stroke-width="2"/>
+        <text x="25" y="30" text-anchor="middle" fill="#00b894" font-family="Arial, sans-serif" font-size="12">🌍</text>
+        <text x="25" y="55" text-anchor="middle" fill="#00b894" font-family="Arial, sans-serif" font-size="10" font-weight="bold">Atmosphere</text>
+        <text x="25" y="70" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">Pressure & composition</text>
+        <text x="25" y="82" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">for stability</text>
+      </g>
+      
+      <!-- Magnetic Field -->
+      <g transform="translate(350, 50)">
+        <circle cx="25" cy="25" r="20" fill="rgba(108, 92, 231, 0.2)" stroke="#6c5ce7" stroke-width="2"/>
+        <text x="25" y="30" text-anchor="middle" fill="#6c5ce7" font-family="Arial, sans-serif" font-size="12">🛡️</text>
+        <text x="25" y="55" text-anchor="middle" fill="#6c5ce7" font-family="Arial, sans-serif" font-size="10" font-weight="bold">Magnetic Field</text>
+        <text x="25" y="70" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">Radiation</text>
+        <text x="25" y="82" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="8">protection</text>
+      </g>
+      
+      <!-- Stable Orbit -->
+      <g transform="translate(500, 50)">
+        <circle cx="25" cy="25" r="20" fill="rgba(255, 204, 2, 0.2)" stroke="#ffcc02" stroke-width="2"/>
+        <text x="25" y="30" text-anchor="middle" fill="#ffcc02" font-family="Arial, sans-serif" font-size="12">🔄</text>
+        <text x="25" y="55" text-anchor="middle" fill="#ffcc02" font-family="Arial, sans

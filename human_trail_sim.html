@@ -30,7 +30,7 @@
             left: 20px;
             z-index: 100;
             color: #00ffaa;
-            font-size: 12px;
+            font-size: 16px;
             line-height: 1.6;
             text-shadow: 0 0 10px #00ffaa;
             background: rgba(0, 0, 0, 0.3);
@@ -46,7 +46,7 @@
             right: 20px;
             z-index: 100;
             color: #ff6b6b;
-            font-size: 11px;
+            font-size: 14px;
             text-align: right;
             text-shadow: 0 0 8px #ff6b6b;
             background: rgba(0, 0, 0, 0.3);
@@ -65,12 +65,22 @@
         .archive-fragment {
             position: absolute;
             color: #4ecdc4;
-            font-size: 10px;
+            font-size: 20px;
             opacity: 0;
-            animation: fragmentGlow 3s ease-in-out infinite;
+            animation: fragmentGlow 5s ease-in-out infinite, fragmentFloat 5s ease-out forwards;
             text-shadow: 0 0 15px #4ecdc4;
             pointer-events: none;
             z-index: 50;
+            white-space: nowrap;
+            transform: translate(-50%, -50%) scale(1);
+            transition: all 0.3s ease-out;
+        }
+        
+        @keyframes fragmentFloat {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            10% { transform: translate(-50%, -60%) scale(1.1); opacity: 0.9; }
+            70% { transform: translate(-50%, -120%) scale(1.1); opacity: 0.9; }
+            100% { transform: translate(-50%, -150%) scale(0.9); opacity: 0; }
         }
 
         @keyframes fragmentGlow {
@@ -454,7 +464,7 @@
             
             setTimeout(() => {
                 document.body.removeChild(fragment);
-            }, 3000);
+            }, 5000);
         }
 
         // Update planet names and environmental sync

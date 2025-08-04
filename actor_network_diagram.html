@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actor Network: Planetary Ecosystems & Temporal Structures</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            color: white;
+        }
+
+        #network-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            cursor: grab;
+        }
+
+        #network-container:active {
+            cursor: grabbing;
+        }
+
+        .node {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            padding: 2px;
+            box-sizing: border-box;
+        }
+
+        .node:hover {
+            transform: scale(1.2);
+            z-index: 1000;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .ecosystem {
+            background: radial-gradient(circle, #4ade80, #22c55e);
+            color: #001a00;
+        }
+
+        .temporal {
+            background: radial-gradient(circle, #60a5fa, #3b82f6);
+            color: #001a33;
+        }
+
+        .historic {
+            background: radial-gradient(circle, #fbbf24, #f59e0b);
+            color: #1a1300;
+        }
+
+        .connection {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            transform-origin: left center;
+            pointer-events: none;
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+
+        .orbital-path {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        #info-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 300px;
+            backdrop-filter: blur(10px);
+        }
+
+        #legend {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+
+        .legend-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .time-spiral {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: rotate 60s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .floating-text {
+            position: absolute;
+            font-size: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            pointer-events: none;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div id="network-container">
+        <div class="time-spiral"></div>
+        
+        <div id="info-panel">
+            <h3>Actor Network Analysis</h3>
+            <p id="selected-info">Click on any node to explore connections between planetary ecosystems, temporal structures, and historic events.</p>
+        </div>
+
+        <div id="legend">
+            <h4>Network Elements</h4>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: radial-gradient(circle, #4ade80, #22c55e);"></div>
+                <span>Ecosystems</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: radial-gradient(circle, #60a5fa, #3b82f6);"></div>
+                <span>Temporal Structures</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: radial-gradient(circle, #fbbf24, #f59e0b);"></div>
+                <span>Historic Events</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const networkData = {
+            nodes: [
+                // Ecosystems
+                { id: 'ocean', type: 'ecosystem', name: 'Ocean Systems', x: 200, y: 300, size: 60, connections: ['tides', 'antikythera', 'astronomical-cycles'] },
+                { id: 'forest', type: 'ecosystem', name: 'Forest Networks', x: 600, y: 200, size: 55, connections: ['seasonal-cycles', 'climate-proxy', 'dendrochronology'] },
+                { id: 'atmosphere', type: 'ecosystem', name: 'Atmospheric Layers', x: 400, y: 150, size: 70, connections: ['solar-cycles', 'ice-cores', 'volcanic-events'] },
+                { id: 'soil', type: 'ecosystem', name: 'Soil Microbiome', x: 300, y: 450, size: 45, connections: ['geological-time', 'agricultural-calendar', 'sediment-layers'] },
+                { id: 'coral-reef', type: 'ecosystem', name: 'Coral Reefs', x: 150, y: 200, size: 50, connections: ['lunar-cycles', 'climate-proxy', 'mass-extinctions'] },
+
+                // Temporal Structures
+                { id: 'tides', type: 'temporal', name: 'Tidal Cycles', x: 250, y: 380, size: 40, connections: ['ocean', 'lunar-cycles', 'antikythera'] },
+                { id: 'seasonal-cycles', type: 'temporal', name: 'Seasonal Rhythms', x: 500, y: 250, size: 45, connections: ['forest', 'astronomical-cycles', 'agricultural-calendar'] },
+                { id: 'solar-cycles', type: 'temporal', name: 'Solar Cycles', x: 450, y: 100, size: 50, connections: ['atmosphere', 'ice-cores', 'sunspot-records'] },
+                { id: 'geological-time', type: 'temporal', name: 'Deep Time', x: 350, y: 500, size: 55, connections: ['soil', 'sediment-layers', 'mass-extinctions'] },
+                { id: 'lunar-cycles', type: 'temporal', name: 'Lunar Phases', x: 100, y: 250, size: 35, connections: ['coral-reef', 'tides', 'antikythera'] },
+                { id: 'astronomical-cycles', type: 'temporal', name: 'Milankovitch Cycles', x: 550, y: 350, size: 60, connections: ['ocean', 'seasonal-cycles', 'ice-ages'] },
+
+                // Historic Events
+                { id: 'antikythera', type: 'historic', name: 'Antikythera Mechanism', x: 300, y: 320, size: 50, connections: ['tides', 'lunar-cycles', 'ocean'] },
+                { id: 'ice-cores', type: 'historic', name: 'Ice Core Records', x: 400, y: 200, size: 45, connections: ['atmosphere', 'solar-cycles', 'volcanic-events'] },
+                { id: 'dendrochronology', type: 'historic', name: 'Tree Ring Dating', x: 650, y: 150, size: 40, connections: ['forest', 'climate-proxy', 'sunspot-records'] },
+                { id: 'sediment-layers', type: 'historic', name: 'Geological Strata', x: 250, y: 500, size: 55, connections: ['soil', 'geological-time', 'mass-extinctions'] },
+                { id: 'climate-proxy', type: 'historic', name: 'Paleoclimate Data', x: 500, y: 180, size: 50, connections: ['forest', 'coral-reef', 'dendrochronology'] },
+                { id: 'agricultural-calendar', type: 'historic', name: 'Ancient Calendars', x: 380, y: 400, size: 45, connections: ['soil', 'seasonal-cycles', 'astronomical-cycles'] },
+                { id: 'volcanic-events', type: 'historic', name: 'Volcanic Eruptions', x: 350, y: 100, size: 40, connections: ['atmosphere', 'ice-cores', 'mass-extinctions'] },
+                { id: 'sunspot-records', type: 'historic', name: 'Solar Observations', x: 550, y: 100, size: 35, connections: ['solar-cycles', 'dendrochronology', 'climate-proxy'] },
+                { id: 'mass-extinctions', type: 'historic', name: 'Extinction Events', x: 200, y: 450, size: 60, connections: ['coral-reef', 'geological-time', 'sediment-layers'] },
+                { id: 'ice-ages', type: 'historic', name: 'Glacial Periods', x: 600, y: 400, size: 55, connections: ['astronomical-cycles', 'climate-proxy', 'ice-cores'] }
+            ]
+        };
+
+        let selectedNode = null;
+        let isDragging = false;
+        let dragOffset = { x: 0, y: 0 };
+
+        function createNetwork() {
+            const container = document.getElementById('network-container');
+            
+            // Create orbital paths
+            createOrbitalPaths(container);
+            
+            // Create connections first (so they appear behind nodes)
+            createConnections(container);
+            
+            // Create nodes
+            networkData.nodes.forEach(node => {
+                createNode(container, node);
+            });
+
+            // Add floating temporal indicators
+            createFloatingText(container);
+        }
+
+        function createOrbitalPaths(container) {
+            const paths = [
+                { size: 300, opacity: 0.1 },
+                { size: 500, opacity: 0.08 },
+                { size: 700, opacity: 0.05 }
+            ];
+
+            paths.forEach(path => {
+                const orbital = document.createElement('div');
+                orbital.className = 'orbital-path';
+                orbital.style.width = path.size + 'px';
+                orbital.style.height = path.size + 'px';
+                orbital.style.left = '50%';
+                orbital.style.top = '50%';
+                orbital.style.transform = 'translate(-50%, -50%)';
+                orbital.style.opacity = path.opacity;
+                container.appendChild(orbital);
+            });
+        }
+
+        function createNode(container, node) {
+            const nodeEl = document.createElement('div');
+            nodeEl.className = `node ${node.type}`;
+            nodeEl.id = node.id;
+            nodeEl.style.width = node.size + 'px';
+            nodeEl.style.height = node.size + 'px';
+            nodeEl.style.left = node.x + 'px';
+            nodeEl.style.top = node.y + 'px';
+            nodeEl.textContent = node.name;
+            
+            nodeEl.addEventListener('click', () => selectNode(node));
+            nodeEl.addEventListener('mousedown', (e) => startDrag(e, node));
+            
+            container.appendChild(nodeEl);
+        }
+
+        function createConnections(container) {
+            networkData.nodes.forEach(node => {
+                node.connections.forEach(connectionId => {
+                    const targetNode = networkData.nodes.find(n => n.id === connectionId);
+                    if (targetNode) {
+                        createConnection(container, node, targetNode);
+                    }
+                });
+            });
+        }
+
+        function createConnection(container, node1, node2) {
+            const connection = document.createElement('div');
+            connection.className = 'connection';
+            
+            const dx = node2.x - node1.x;
+            const dy = node2.y - node1.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+            
+            connection.style.width = distance + 'px';
+            connection.style.left = (node1.x + node1.size/2) + 'px';
+            connection.style.top = (node1.y + node1.size/2) + 'px';
+            connection.style.transform = `rotate(${angle}deg)`;
+            connection.style.animationDelay = Math.random() * 3 + 's';
+            
+            container.appendChild(connection);
+        }
+
+        function createFloatingText(container) {
+            const texts = [
+                { text: 'Time Spiral', x: 100, y: 100 },
+                { text: 'Deep Time', x: 700, y: 500 },
+                { text: 'Cycles', x: 600, y: 50 },
+                { text: 'Networks', x: 50, y: 400 },
+                { text: 'Temporal Flow', x: 750, y: 200 }
+            ];
+
+            texts.forEach((item, index) => {
+                const textEl = document.createElement('div');
+                textEl.className = 'floating-text';
+                textEl.textContent = item.text;
+                textEl.style.left = item.x + 'px';
+                textEl.style.top = item.y + 'px';
+                textEl.style.animationDelay = index * 0.8 + 's';
+                container.appendChild(textEl);
+            });
+        }
+
+        function selectNode(node) {
+            const infoPanel = document.getElementById('selected-info');
+            const connections = node.connections.map(id => {
+                const connectedNode = networkData.nodes.find(n => n.id === id);
+                return connectedNode ? connectedNode.name : id;
+            }).join(', ');
+
+            infoPanel.innerHTML = `
+                <strong>${node.name}</strong><br>
+                Type: ${node.type}<br>
+                Connections: ${connections}<br><br>
+                <em>${getNodeDescription(node)}</em>
+            `;
+
+            // Highlight connected nodes
+            highlightConnections(node);
+        }
+
+        function getNodeDescription(node) {
+            const descriptions = {
+                'antikythera': 'Ancient Greek astronomical calculator demonstrating deep understanding of celestial cycles and their connection to earthly phenomena.',
+                'ocean': 'Vast marine ecosystems that regulate planetary climate and respond to astronomical forcing over multiple timescales.',
+                'forest': 'Complex terrestrial networks that record environmental history through growth patterns and species interactions.',
+                'tides': 'Rhythmic ocean movements driven by lunar and solar gravitational forces, fundamental to coastal ecosystems.',
+                'ice-cores': 'Frozen archives containing detailed records of past atmospheric conditions and climate variations.',
+                'mass-extinctions': 'Catastrophic events that reshaped life on Earth, often linked to astronomical or geological triggers.'
+            };
+            return descriptions[node.id] || 'Part of the interconnected web of planetary systems and temporal structures.';
+        }
+
+        function highlightConnections(node) {
+            // Reset all nodes
+            document.querySelectorAll('.node').forEach(n => {
+                n.style.opacity = '0.4';
+                n.style.transform = 'scale(0.8)';
+            });
+
+            // Highlight selected node
+            const selectedEl = document.getElementById(node.id);
+            selectedEl.style.opacity = '1';
+            selectedEl.style.transform = 'scale(1.2)';
+
+            // Highlight connected nodes
+            node.connections.forEach(id => {
+                const connectedEl = document.getElementById(id);
+                if (connectedEl) {
+                    connectedEl.style.opacity = '1';
+                    connectedEl.style.transform = 'scale(1)';
+                }
+            });
+
+            // Reset after 3 seconds
+            setTimeout(() => {
+                document.querySelectorAll('.node').forEach(n => {
+                    n.style.opacity = '1';
+                    n.style.transform = 'scale(1)';
+                });
+            }, 3000);
+        }
+
+        function startDrag(e, node) {
+            isDragging = true;
+            dragOffset.x = e.clientX - node.x;
+            dragOffset.y = e.clientY - node.y;
+            selectedNode = node;
+            
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+            e.preventDefault();
+        }
+
+        function drag(e) {
+            if (!isDragging || !selectedNode) return;
+            
+            selectedNode.x = e.clientX - dragOffset.x;
+            selectedNode.y = e.clientY - dragOffset.y;
+            
+            const nodeEl = document.getElementById(selectedNode.id);
+            nodeEl.style.left = selectedNode.x + 'px';
+            nodeEl.style.top = selectedNode.y + 'px';
+            
+            // Update connections (simplified - would need full redraw for perfect accuracy)
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            selectedNode = null;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+
+        // Initialize the network
+        createNetwork();
+
+        // Add some interactive dynamics
+        setInterval(() => {
+            // Subtle position variations to simulate dynamic systems
+            networkData.nodes.forEach(node => {
+                if (!isDragging) {
+                    const nodeEl = document.getElementById(node.id);
+                    const variation = 2;
+                    const offsetX = (Math.random() - 0.5) * variation;
+                    const offsetY = (Math.random() - 0.5) * variation;
+                    nodeEl.style.transform += ` translate(${offsetX}px, ${offsetY}px)`;
+                }
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

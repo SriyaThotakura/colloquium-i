@@ -1,0 +1,263 @@
+<svg viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Galactic gradients -->
+    <radialGradient id="spaceGrad" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#0A0A2E;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#16213E;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#0F3460;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16537E;stop-opacity:1" />
+    </radialGradient>
+    
+    <radialGradient id="galaxyCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:0.8" />
+      <stop offset="30%" style="stop-color:#FF6B35;stop-opacity:0.6" />
+      <stop offset="70%" style="stop-color:#6A0572;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#1A0B33;stop-opacity:0.2" />
+    </radialGradient>
+    
+    <radialGradient id="planetGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#4FC3F7;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#0277BD;stop-opacity:0.3" />
+    </radialGradient>
+    
+    <linearGradient id="earthGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#2196F3;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#1976D2;stop-opacity:0.8" />
+    </linearGradient>
+    
+    <!-- Glow and animation effects -->
+    <filter id="starGlow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="strongGlow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="dataStream">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Arrow markers -->
+    <marker id="arrowGold" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#FFD700" opacity="0.8"/>
+    </marker>
+    
+    <marker id="arrowCyan" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#00BCD4" opacity="0.8"/>
+    </marker>
+  </defs>
+  
+  <!-- Deep space background -->
+  <rect width="1000" height="800" fill="url(#spaceGrad)"/>
+  
+  <!-- Distant galaxy -->
+  <ellipse cx="800" cy="150" rx="80" ry="30" fill="url(#galaxyCore)" opacity="0.6" transform="rotate(45 800 150)"/>
+  
+  <!-- Star field -->
+  <circle cx="100" cy="80" r="1.5" fill="#FFF" opacity="0.9" filter="url(#starGlow)"/>
+  <circle cx="200" cy="120" r="1" fill="#FFD700" opacity="0.8"/>
+  <circle cx="350" cy="60" r="1.5" fill="#4FC3F7" opacity="0.9"/>
+  <circle cx="450" cy="100" r="1" fill="#FF6B35" opacity="0.7"/>
+  <circle cx="600" cy="80" r="1.5" fill="#E91E63" opacity="0.8"/>
+  <circle cx="750" cy="90" r="1" fill="#9C27B0" opacity="0.7"/>
+  <circle cx="150" cy="200" r="1" fill="#FFF" opacity="0.6"/>
+  <circle cx="300" cy="180" r="1.5" fill="#00BCD4" opacity="0.8"/>
+  <circle cx="500" cy="170" r="1" fill="#4CAF50" opacity="0.7"/>
+  <circle cx="650" cy="190" r="1.5" fill="#FF9800" opacity="0.9"/>
+  <circle cx="850" cy="210" r="1" fill="#F44336" opacity="0.8"/>
+  
+  <!-- Nebula effects -->
+  <ellipse cx="200" cy="300" rx="60" ry="40" fill="#6A0572" opacity="0.3" transform="rotate(30 200 300)"/>
+  <ellipse cx="750" cy="350" rx="50" ry="35" fill="#0277BD" opacity="0.2" transform="rotate(-20 750 350)"/>
+  
+  <!-- Title spanning the cosmos -->
+  <text x="500" y="50" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFD700" text-anchor="middle" filter="url(#starGlow)">GALACTIC EXPLORATION: ENRICHING HUMANITY'S FUTURE</text>
+  
+  <!-- Left side: Apollo Legacy -->
+  <g transform="translate(80, 150)">
+    <!-- Apollo mission representation -->
+    <circle cx="0" cy="0" r="35" fill="url(#earthGlow)" filter="url(#strongGlow)"/>
+    <text x="0" y="-50" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4FC3F7" text-anchor="middle">APOLLO MISSIONS</text>
+    <text x="0" y="-35" font-family="Arial, sans-serif" font-size="10" fill="#81D4FA" text-anchor="middle">Historical Precedent</text>
+    
+    <!-- Apollo achievements -->
+    <g transform="translate(-60, 60)">
+      <rect x="0" y="0" width="120" height="80" fill="#0A0A2E" stroke="#4FC3F7" stroke-width="1" rx="5" opacity="0.8"/>
+      <text x="60" y="15" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#4FC3F7" text-anchor="middle">Apollo Legacy:</text>
+      <text x="10" y="30" font-family="Arial, sans-serif" font-size="8" fill="#81D4FA">• Satellite weather systems</text>
+      <text x="10" y="43" font-family="Arial, sans-serif" font-size="8" fill="#81D4FA">• Digital imaging technology</text>
+      <text x="10" y="56" font-family="Arial, sans-serif" font-size="8" fill="#81D4FA">• Materials science advances</text>
+      <text x="10" y="69" font-family="Arial, sans-serif" font-size="8" fill="#81D4FA">• Global perspective shift</text>
+    </g>
+  </g>
+  
+  <!-- Center: Alien worlds exploration -->
+  <g transform="translate(500, 250)">
+    <!-- Central alien planet -->
+    <circle cx="0" cy="0" r="45" fill="url(#planetGlow)" filter="url(#strongGlow)"/>
+    <circle cx="0" cy="0" r="40" fill="#8E24AA" opacity="0.6"/>
+    <circle cx="-15" cy="-10" r="8" fill="#E1BEE7" opacity="0.8"/>
+    <circle cx="20" cy="15" r="12" fill="#AB47BC" opacity="0.7"/>
+    <circle cx="-10" cy="25" r="6" fill="#CE93D8" opacity="0.9"/>
+    
+    <!-- Exploration probes -->
+    <g transform="translate(-70, -20)">
+      <rect x="0" y="0" width="12" height="8" fill="#607D8B" rx="2"/>
+      <line x1="6" y1="0" x2="6" y2="-10" stroke="#FFD700" stroke-width="1"/>
+      <circle cx="6" cy="-12" r="2" fill="#FFD700" filter="url(#starGlow)"/>
+    </g>
+    
+    <g transform="translate(60, -30)">
+      <polygon points="0,0 8,4 0,8" fill="#37474F"/>
+      <line x1="8" y1="4" x2="18" y2="4" stroke="#00BCD4" stroke-width="2"/>
+      <circle cx="20" cy="4" r="2" fill="#00BCD4" filter="url(#starGlow)"/>
+    </g>
+    
+    <!-- Planet ecosystem elements -->
+    <text x="0" y="70" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#E1BEE7" text-anchor="middle">ALIEN ECOSYSTEMS</text>
+    <text x="0" y="85" font-family="Arial, sans-serif" font-size="9" fill="#CE93D8" text-anchor="middle">Exploration & Discovery</text>
+  </g>
+  
+  <!-- Right side: Future Earth -->
+  <g transform="translate(850, 400)">
+    <!-- Future Earth -->
+    <circle cx="0" cy="0" r="40" fill="url(#earthGlow)" filter="url(#strongGlow)"/>
+    <circle cx="0" cy="0" r="35" fill="#1976D2" opacity="0.7"/>
+    <circle cx="-12" cy="-8" r="8" fill="#4CAF50" opacity="0.9"/>
+    <circle cx="15" cy="10" r="10" fill="#2E7D32" opacity="0.8"/>
+    <circle cx="-8" cy="20" r="6" fill="#66BB6A" opacity="0.9"/>
+    
+    <text x="0" y="60" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#4FC3F7" text-anchor="middle">FUTURE EARTH</text>
+    <text x="0" y="75" font-family="Arial, sans-serif" font-size="9" fill="#81D4FA" text-anchor="middle">Enhanced & Enriched</text>
+  </g>
+  
+  <!-- Data streams and knowledge transfer -->
+  <path d="M 150 250 Q 300 200 450 250" stroke="#FFD700" stroke-width="3" fill="none" marker-end="url(#arrowGold)" filter="url(#dataStream)"/>
+  <path d="M 550 250 Q 700 300 800 400" stroke="#00BCD4" stroke-width="3" fill="none" marker-end="url(#arrowCyan)" filter="url(#dataStream)"/>
+  
+  <!-- Knowledge particles flowing -->
+  <circle cx="200" cy="230" r="2" fill="#FFD700" opacity="0.8" filter="url(#starGlow)"/>
+  <circle cx="280" cy="210" r="1.5" fill="#FF6B35" opacity="0.7"/>
+  <circle cx="360" cy="235" r="2" fill="#E91E63" opacity="0.8"/>
+  
+  <circle cx="620" cy="270" r="2" fill="#00BCD4" opacity="0.8" filter="url(#starGlow)"/>
+  <circle cx="700" cy="320" r="1.5" fill="#4CAF50" opacity="0.7"/>
+  <circle cx="750" cy="350" r="2" fill="#2196F3" opacity="0.8"/>
+  
+  <!-- Three transformation categories -->
+  <g transform="translate(200, 450)">
+    <!-- Tools -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="180" height="100" fill="rgba(13, 71, 161, 0.2)" stroke="#1976D2" stroke-width="2" rx="8"/>
+      <text x="90" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4FC3F7" text-anchor="middle">TOOLS</text>
+      
+      <!-- Tool icons -->
+      <g transform="translate(20, 35)">
+        <rect x="0" y="0" width="15" height="10" fill="#607D8B" rx="2"/>
+        <circle cx="7" cy="5" r="2" fill="#00BCD4" filter="url(#starGlow)"/>
+        <text x="25" y="8" font-family="Arial, sans-serif" font-size="8" fill="#81D4FA">Advanced sensors</text>
+      </g>
+      
+      <g transform="translate(20, 50)">
+        <polygon points="0,5 5,0 10,5 5,10" fill="#FF6B35"/>
+        <text x="15" y="8" font-family="Arial, sans-serif" font-size="8" fill="#FFAB91">Bio-engineering tech</text>
+      </g>
+      
+      <g transform="translate(20, 65)">
+        <circle cx="5" cy="5" r="5" fill="none" stroke="#4CAF50" stroke-width="1"/>
+        <circle cx="5" cy="5" r="2" fill="#4CAF50"/>
+        <text x="15" y="8" font-family="Arial, sans-serif" font-size="8" fill="#A5D6A7">Ecosystem modeling</text>
+      </g>
+    </g>
+    
+    <!-- Systems -->
+    <g transform="translate(200, 0)">
+      <rect x="0" y="0" width="180" height="100" fill="rgba(255, 107, 53, 0.2)" stroke="#FF6B35" stroke-width="2" rx="8"/>
+      <text x="90" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF8A65" text-anchor="middle">SYSTEMS</text>
+      
+      <!-- System icons -->
+      <g transform="translate(20, 35)">
+        <rect x="0" y="0" width="12" height="8" fill="#9C27B0" rx="1"/>
+        <rect x="2" y="2" width="8" height="4" fill="#E1BEE7"/>
+        <text x="20" y="8" font-family="Arial, sans-serif" font-size="8" fill="#CE93D8">Global monitoring</text>
+      </g>
+      
+      <g transform="translate(20, 50)">
+        <line x1="0" y1="5" x2="10" y2="5" stroke="#00BCD4" stroke-width="2"/>
+        <circle cx="2" cy="5" r="1.5" fill="#00BCD4"/>
+        <circle cx="8" cy="5" r="1.5" fill="#00BCD4"/>
+        <text x="15" y="8" font-family="Arial, sans-serif" font-size="8" fill="#4DD0E1">Interconnected networks</text>
+      </g>
+      
+      <g transform="translate(20, 65)">
+        <polygon points="5,0 10,5 5,10 0,5" fill="#4CAF50"/>
+        <text x="15" y="8" font-family="Arial, sans-serif" font-size="8" fill="#81C784">Adaptive frameworks</text>
+      </g>
+    </g>
+    
+    <!-- Values -->
+    <g transform="translate(400, 0)">
+      <rect x="0" y="0" width="180" height="100" fill="rgba(76, 175, 80, 0.2)" stroke="#4CAF50" stroke-width="2" rx="8"/>
+      <text x="90" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#81C784" text-anchor="middle">VALUES</text>
+      
+      <!-- Value icons -->
+      <g transform="translate(20, 35)">
+        <circle cx="5" cy="5" r="5" fill="none" stroke="#FFD700" stroke-width="1"/>
+        <polygon points="5,2 6,4 8,4 6.5,5.5 7,8 5,7 3,8 3.5,5.5 2,4 4,4" fill="#FFD700"/>
+        <text x="15" y="8" font-family="Arial, sans-serif" font-size="8" fill="#FFF176">Cosmic perspective</text>
+      </g>
+      
+      <g transform="translate(20, 50)">
+        <ellipse cx="5" cy="5" rx="5" ry="3" fill="none" stroke="#E91E63" stroke-width="1"/>
+        <circle cx="5" cy="5" r="1" fill="#E91E63"/>
+        <text x="15" y="8" font-family="Arial, sans-serif" font-size="8" fill="#F48FB1">Universal stewardship</text>
+      </g>
+      
+      <g transform="translate(20, 65)">
+        <path d="M 2 8 Q 5 2 8 8" stroke="#2196F3" stroke-width="2" fill="none"/>
+        <text x="15" y="8" font-family="Arial, sans-serif" font-size="8" fill="#90CAF9">Long-term thinking</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Philosophical reflection box -->
+  <g transform="translate(100, 600)">
+    <rect x="0" y="0" width="800" height="120" fill="rgba(10, 10, 46, 0.8)" stroke="#FFD700" stroke-width="2" rx="10"/>
+    
+    <text x="400" y="25" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFD700" text-anchor="middle">The Deeper Journey</text>
+    
+    <text x="50" y="50" font-family="Arial, sans-serif" font-size="11" fill="#E1F5FE">While these planetary ecosystems are not directly useful <tspan font-style="italic">today</tspan>, the act of exploring them enriches</text>
+    <text x="50" y="67" font-family="Arial, sans-serif" font-size="11" fill="#E1F5FE">humanity in deeply practical and philosophical ways. Like the Apollo missions that gave us</text>
+    <text x="50" y="84" font-family="Arial, sans-serif" font-size="11" fill="#E1F5FE">satellite weather systems and digital imaging, the search for alien environments will shape</text>
+    <text x="50" y="101" font-family="Arial, sans-serif" font-size="11" fill="#FFD700" font-weight="bold">the tools, systems, and values we carry into the future—on Earth and beyond.</text>
+  </g>
+  
+  <!-- Connecting constellation lines -->
+  <path d="M 115 185 L 180 220" stroke="#4FC3F7" stroke-width="1" opacity="0.5"/>
+  <path d="M 220 250 L 280 280" stroke="#4FC3F7" stroke-width="1" opacity="0.5"/>
+  <path d="M 500 295 L 550 320" stroke="#00BCD4" stroke-width="1" opacity="0.5"/>
+  <path d="M 580 350 L 650 380" stroke="#00BCD4" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Orbital paths -->
+  <ellipse cx="500" cy="250" rx="120" ry="80" fill="none" stroke="#FFD700" stroke-width="1" opacity="0.3" stroke-dasharray="5,5"/>
+  <ellipse cx="500" cy="250" rx="200" ry="140" fill="none" stroke="#00BCD4" stroke-width="1" opacity="0.2" stroke-dasharray="3,3"/>
+  
+  <!-- Final inspirational elements -->
+  <g transform="translate(500, 750)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="12" fill="#FFD700" text-anchor="middle" font-weight="bold">✦ Exploration shapes who we become, not just what we discover ✦</text>
+  </g>
+</svg>
