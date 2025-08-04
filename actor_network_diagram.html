@@ -263,6 +263,52 @@
             nodeEl.addEventListener('click', () => selectNode(node));
             nodeEl.addEventListener('mousedown', (e) => startDrag(e, node));
             
+            // Add hover effect for Antikythera node
+            if (node.id === 'antikythera') {
+                const imagePreview = document.createElement('div');
+                imagePreview.className = 'image-preview';
+                imagePreview.style.display = 'none';
+                imagePreview.style.position = 'absolute';
+                imagePreview.style.width = '300px';
+                imagePreview.style.height = '200px';
+                imagePreview.style.backgroundImage = 'url(images/antikythera.jpg)';
+                imagePreview.style.backgroundSize = 'cover';
+                imagePreview.style.backgroundPosition = 'center';
+                imagePreview.style.borderRadius = '8px';
+                imagePreview.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+                imagePreview.style.zIndex = '1000';
+                imagePreview.style.transition = 'opacity 0.3s ease';
+                imagePreview.style.opacity = '0';
+                imagePreview.style.pointerEvents = 'none';
+                
+                nodeEl.appendChild(imagePreview);
+                
+                nodeEl.addEventListener('mouseenter', (e) => {
+                    imagePreview.style.display = 'block';
+                    imagePreview.style.left = 'calc(100% + 20px)';
+                    imagePreview.style.top = '50%';
+                    imagePreview.style.transform = 'translateY(-50%)';
+                    setTimeout(() => {
+                        imagePreview.style.opacity = '1';
+                    }, 10);
+                });
+                
+                nodeEl.addEventListener('mouseleave', () => {
+                    imagePreview.style.opacity = '0';
+                    setTimeout(() => {
+                        imagePreview.style.display = 'none';
+                    }, 300);
+                });
+                
+                // Ensure image preview stays with the node when dragging
+                nodeEl.addEventListener('mousemove', (e) => {
+                    if (isDragging) {
+                        imagePreview.style.left = 'calc(100% + 20px)';
+                        imagePreview.style.top = '50%';
+                    }
+                });
+            }
+            
             container.appendChild(nodeEl);
         }
 

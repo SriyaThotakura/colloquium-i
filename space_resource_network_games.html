@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Systems Chord Diagram</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f23 70%);
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            color: #e0e6ed;
+            overflow: hidden;
+            position: relative;
+            height: 100vh;
+        }
+
+
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .chord-container {
+            width: 90vw;
+            height: 90vh;
+            position: relative;
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 0 60px rgba(120, 119, 198, 0.2),
+                inset 0 0 60px rgba(255, 255, 255, 0.03);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 121, 198, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 255, 198, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: subtle-float 20s ease-in-out infinite;
+        }
+
+        @keyframes subtle-float {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.05) rotate(0.5deg); }
+        }
+
+        .legend {
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            padding: 12px 24px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+            font-weight: 500;
+            color: #ffffff;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .info-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(30px);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 300px;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.4s ease;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .info-panel.visible {
+            opacity: 1;
+        }
+
+        .info-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .info-subtitle {
+            font-size: 12px;
+            color: #a0a8b5;
+            margin-bottom: 12px;
+        }
+
+        .info-strength {
+            font-size: 14px;
+            color: #4ecdc4;
+            font-weight: 500;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            padding: 12px 24px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            color: #a0a8b5;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .chord-arc {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chord-arc:hover {
+            filter: brightness(1.3) drop-shadow(0 0 10px currentColor);
+        }
+
+        .chord-ribbon {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            mix-blend-mode: screen;
+        }
+
+        .chord-ribbon:hover {
+            filter: brightness(1.5) drop-shadow(0 0 15px currentColor);
+        }
+
+        .chord-ribbon.highlighted {
+            filter: brightness(2) drop-shadow(0 0 20px currentColor);
+            animation: chord-pulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes chord-pulse {
+            0% { filter: brightness(2) drop-shadow(0 0 20px currentColor); }
+            100% { filter: brightness(2.5) drop-shadow(0 0 30px currentColor); }
+        }
+
+
+        .chord-label {
+            font-size: 14px;
+            font-weight: 500;
+            fill: #ffffff;
+            text-anchor: middle;
+            pointer-events: none;
+            filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.8));
+        }
+
+        .chord-label.game {
+            fill: #4ecdc4;
+        }
+
+        .chord-label.concept {
+            fill: #ff6b9d;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-size: 16px;
+            opacity: 0;
+            animation: fade-in 0.5s ease forwards;
+        }
+
+        @keyframes fade-in {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chord-container">
+            <div class="legend">🎮 Game Systems ↔ 🌍 Planetary Concepts</div>
+            
+            <div class="info-panel" id="infoPanel">
+                <div class="info-title" id="infoTitle">Game → Concept</div>
+                <div class="info-subtitle" id="infoSubtitle">Connection Details</div>
+                <div class="info-strength" id="infoStrength">Strength: --</div>
+            </div>
+
+            <svg id="chordSvg" width="100%" height="100%"></svg>
+            
+            <div class="controls">
+                Hover over arcs and ribbons • Click to explore • R to reset
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Connection data with enhanced relationships
+        const connections = [
+            // The Sims - Personal habitat management
+            { game: 'The Sims', concept: 'Individual Habitat', strength: 90 },
+            { game: 'The Sims', concept: 'Modular Ecosystems', strength: 40 },
+            
+            // Minecraft - Creative survival building
+            { game: 'Minecraft', concept: 'Resource Building', strength: 90 },
+            { game: 'Minecraft', concept: 'Procedural Systems', strength: 70 },
+            { game: 'Minecraft', concept: 'Modular Ecosystems', strength: 80 },
+            { game: 'Minecraft', concept: 'Closed Ecosystems', strength: 60 },
+            { game: 'Minecraft', concept: 'Survival Systems', strength: 50 },
+            
+            // Cities: Skylines - Urban infrastructure
+            { game: 'Cities: Skylines', concept: 'Procedural Systems', strength: 90 },
+            { game: 'Cities: Skylines', concept: 'Modular Ecosystems', strength: 70 },
+            { game: 'Cities: Skylines', concept: 'Atmospheric Control', strength: 50 },
+            { game: 'Cities: Skylines', concept: 'Closed Ecosystems', strength: 60 },
+            { game: 'Cities: Skylines', concept: 'Resource Building', strength: 40 },
+            
+            // NieR: Automata - Post-apocalyptic themes
+            { game: 'NieR: Automata', concept: 'Post-Apocalyptic', strength: 90 },
+            { game: 'NieR: Automata', concept: 'Survival Systems', strength: 60 },
+            { game: 'NieR: Automata', concept: 'Closed Ecosystems', strength: 70 },
+            { game: 'NieR: Automata', concept: 'Orbital Physics', strength: 30 },
+            
+            // Block'hood - Ecological building
+            { game: "Block'hood", concept: 'Modular Ecosystems', strength: 90 },
+            { game: "Block'hood", concept: 'Closed Ecosystems', strength: 90 },
+            { game: "Block'hood", concept: 'Atmospheric Control', strength: 70 },
+            { game: "Block'hood", concept: 'Survival Systems', strength: 50 },
+            { game: "Block'hood", concept: 'Resource Building', strength: 60 },
+            
+            // Surviving Mars - Planetary colonization
+            { game: 'Surviving Mars', concept: 'Survival Systems', strength: 90 },
+            { game: 'Surviving Mars', concept: 'Atmospheric Control', strength: 80 },
+            { game: 'Surviving Mars', concept: 'Terraforming', strength: 90 },
+            { game: 'Surviving Mars', concept: 'Modular Ecosystems', strength: 70 },
+            { game: 'Surviving Mars', concept: 'Closed Ecosystems', strength: 60 },
+            { game: 'Surviving Mars', concept: 'Procedural Systems', strength: 40 },
+            
+            // Frostpunk - Extreme survival
+            { game: 'Frostpunk', concept: 'Survival Systems', strength: 90 },
+            { game: 'Frostpunk', concept: 'Post-Apocalyptic', strength: 80 },
+            { game: 'Frostpunk', concept: 'Atmospheric Control', strength: 60 },
+            { game: 'Frostpunk', concept: 'Closed Ecosystems', strength: 50 },
+            { game: 'Frostpunk', concept: 'Modular Ecosystems', strength: 40 },
+            
+            // Outer Wilds - Space exploration
+            { game: 'Outer Wilds', concept: 'Orbital Physics', strength: 90 },
+            { game: 'Outer Wilds', concept: 'Atmospheric Control', strength: 70 },
+            { game: 'Outer Wilds', concept: 'Closed Ecosystems', strength: 80 },
+            { game: 'Outer Wilds', concept: 'Terraforming', strength: 40 },
+            { game: 'Outer Wilds', concept: 'Megastructures', strength: 30 },
+            
+            // Dyson Sphere Program - Galactic engineering
+            { game: 'Dyson Sphere', concept: 'Megastructures', strength: 90 },
+            { game: 'Dyson Sphere', concept: 'Orbital Physics', strength: 70 },
+            { game: 'Dyson Sphere', concept: 'Procedural Systems', strength: 80 },
+            { game: 'Dyson Sphere', concept: 'Fleet Management', strength: 60 },
+            { game: 'Dyson Sphere', concept: 'Atmospheric Control', strength: 30 },
+            { game: 'Dyson Sphere', concept: 'Resource Building', strength: 70 },
+            
+            // Timberborn - Ecological management
+            { game: 'Timberborn', concept: 'Closed Ecosystems', strength: 90 },
+            { game: 'Timberborn', concept: 'Atmospheric Control', strength: 50 },
+            { game: 'Timberborn', concept: 'Modular Ecosystems', strength: 70 },
+            { game: 'Timberborn', concept: 'Survival Systems', strength: 60 },
+            { game: 'Timberborn', concept: 'Resource Building', strength: 50 },
+            { game: 'Timberborn', concept: 'Terraforming', strength: 40 },
+            
+            // IXION - Space station management
+            { game: 'IXION', concept: 'Fleet Management', strength: 90 },
+            { game: 'IXION', concept: 'Survival Systems', strength: 80 },
+            { game: 'IXION', concept: 'Atmospheric Control', strength: 70 },
+            { game: 'IXION', concept: 'Closed Ecosystems', strength: 60 },
+            { game: 'IXION', concept: 'Orbital Physics', strength: 50 },
+            { game: 'IXION', concept: 'Modular Ecosystems', strength: 60 },
+            
+            // Planet Crafter - Full terraforming
+            { game: 'Planet Crafter', concept: 'Terraforming', strength: 90 },
+            { game: 'Planet Crafter', concept: 'Atmospheric Control', strength: 90 },
+            { game: 'Planet Crafter', concept: 'Closed Ecosystems', strength: 80 },
+            { game: 'Planet Crafter', concept: 'Survival Systems', strength: 70 },
+            { game: 'Planet Crafter', concept: 'Modular Ecosystems', strength: 60 },
+            { game: 'Planet Crafter', concept: 'Resource Building', strength: 50 },
+            
+            // Emissaries Trilogy - AI civilization management
+            { game: 'Emissaries Trilogy', concept: 'Fleet Management', strength: 90 },
+            { game: 'Emissaries Trilogy', concept: 'Procedural Systems', strength: 80 },
+            { game: 'Emissaries Trilogy', concept: 'Megastructures', strength: 80 },
+            { game: 'Emissaries Trilogy', concept: 'Orbital Physics', strength: 70 },
+            { game: 'Emissaries Trilogy', concept: 'Closed Ecosystems', strength: 60 },
+            { game: 'Emissaries Trilogy', concept: 'Atmospheric Control', strength: 40 },
+            { game: 'Emissaries Trilogy', concept: 'Post-Apocalyptic', strength: 50 }
+        ];
+
+        // Filter connections to show only strong relationships (>70 strength)
+        const strongConnections = connections.filter(d => d.strength > 70);
+        
+        // Limit to top 3 connections per node
+        const limitedConnections = [];
+        
+        // Get top connections for each game
+        const games = [...new Set(connections.map(d => d.game))];
+        games.forEach(game => {
+            const gameConnections = strongConnections
+                .filter(d => d.game === game)
+                .sort((a, b) => b.strength - a.strength)
+                .slice(0, 3);
+            limitedConnections.push(...gameConnections);
+        });
+        
+        // Get top connections for each concept
+        const concepts = [...new Set(connections.map(d => d.concept))];
+        concepts.forEach(concept => {
+            const conceptConnections = strongConnections
+                .filter(d => d.concept === concept)
+                .sort((a, b) => b.strength - a.strength)
+                .slice(0, 3)
+                .filter(conn => !limitedConnections.some(existing => 
+                    existing.game === conn.game && existing.concept === conn.concept
+                ));
+            limitedConnections.push(...conceptConnections);
+        });
+        
+        // Use filtered connections
+        const filteredConnections = limitedConnections;
+        
+        // Only include games and concepts that have connections
+        const rawActiveGames = [...new Set(filteredConnections.map(d => d.game))];
+        const rawActiveConcepts = [...new Set(filteredConnections.map(d => d.concept))];
+        
+        // Group similar games together
+        const gameGroups = {
+            'Survival/Building': ['Minecraft', 'Surviving Mars', 'Frostpunk', 'Planet Crafter', 'Timberborn'],
+            'City/Colony Management': ['Cities: Skylines', 'Block\'hood', 'IXION'],
+            'Space/Sci-Fi': ['Outer Wilds', 'Dyson Sphere', 'Emissaries Trilogy'],
+            'Simulation': ['The Sims', 'NieR: Automata']
+        };
+        
+        // Order games by groups
+        const activeGames = [];
+        Object.values(gameGroups).forEach(group => {
+            group.forEach(game => {
+                if (rawActiveGames.includes(game)) {
+                    activeGames.push(game);
+                }
+            });
+        });
+        
+        // Group similar concepts together
+        const conceptGroups = {
+            'Environment': ['Atmospheric Control', 'Terraforming', 'Closed Ecosystems', 'Modular Ecosystems'],
+            'Infrastructure': ['Resource Building', 'Procedural Systems', 'Megastructures'],
+            'Space Systems': ['Orbital Physics', 'Fleet Management'],
+            'Survival': ['Survival Systems', 'Post-Apocalyptic', 'Individual Habitat']
+        };
+        
+        // Order concepts by groups
+        const activeConcepts = [];
+        Object.values(conceptGroups).forEach(group => {
+            group.forEach(concept => {
+                if (rawActiveConcepts.includes(concept)) {
+                    activeConcepts.push(concept);
+                }
+            });
+        });
+        
+        const allNodes = [...activeGames, ...activeConcepts];
+
+        // Updated color schemes - warmer earth tones and cool space tones
+        const gameColors = d3.scaleOrdinal()
+            .domain(activeGames)
+            .range(['#e74c3c', '#f39c12', '#f1c40f', '#27ae60', '#2ecc71', '#16a085', 
+                   '#1abc9c', '#3498db', '#2980b9', '#9b59b6', '#8e44ad', '#e67e22', '#d35400']);
+
+        const conceptColors = d3.scaleOrdinal()
+            .domain(activeConcepts)
+            .range(['#34495e', '#2c3e50', '#7f8c8d', '#95a5a6', '#ecf0f1', '#bdc3c7',
+                   '#ff7675', '#fd79a8', '#fdcb6e', '#6c5ce7', '#a29bfe', '#74b9ff']);
+
+        // Setup SVG
+        const container = document.querySelector('.chord-container');
+        const svg = d3.select("#chordSvg");
+        let width, height, radius;
+        let leftPositions = [];
+        let rightPositions = [];
+
+        function updateDimensions() {
+            const rect = container.getBoundingClientRect();
+            width = rect.width;
+            height = rect.height;
+            radius = Math.min(width, height) / 3;
+            svg.attr("width", width).attr("height", height);
+        }
+
+        // Create matrix for chord diagram
+        function createMatrix() {
+            const matrix = Array(allNodes.length).fill(null).map(() => Array(allNodes.length).fill(0));
+            
+            connections.forEach(conn => {
+                const gameIndex = allNodes.indexOf(conn.game);
+                const conceptIndex = allNodes.indexOf(conn.concept);
+                if (gameIndex !== -1 && conceptIndex !== -1) {
+                    matrix[gameIndex][conceptIndex] = conn.strength;
+                    matrix[conceptIndex][gameIndex] = conn.strength; // Make symmetric
+                }
+            });
+            
+            return matrix;
+        }
+
+        function drawChord() {
+            svg.selectAll("*").remove();
+
+            const g = svg.append("g")
+                .attr("transform", `translate(50, 50)`);
+
+            const matrix = createMatrix();
+            
+            // Separate games and concepts for vertical layout
+            const leftNodes = activeGames;
+            const rightNodes = activeConcepts;
+            
+            const leftHeight = height - 100;
+            const rightHeight = height - 100;
+            const nodeHeight = 30;
+            const nodeSpacing = leftHeight / (leftNodes.length + 1);
+            const rightSpacing = rightHeight / (rightNodes.length + 1);
+            
+            // Calculate positions for left and right nodes - closer together
+            const centerX = width / 2;
+            const spacing = Math.min(width * 0.3, 300); // 30% of width or max 300px
+            
+            leftPositions = leftNodes.map((d, i) => ({
+                name: d,
+                x: centerX - spacing,
+                y: (i + 1) * nodeSpacing,
+                index: allNodes.indexOf(d)
+            }));
+            
+            rightPositions = rightNodes.map((d, i) => ({
+                name: d,
+                x: centerX + spacing,
+                y: (i + 1) * rightSpacing,
+                index: allNodes.indexOf(d)
+            }));
+
+            // Add gradients for connections
+            const defs = svg.append("defs");
+            filteredConnections.forEach((conn, i) => {
+                const gradient = defs.append("linearGradient")
+                    .attr("id", `connection-gradient-${i}`)
+                    .attr("gradientUnits", "objectBoundingBox")
+                    .attr("x1", "0%").attr("y1", "0%")
+                    .attr("x2", "100%").attr("y2", "0%");
+                
+                const gameColor = gameColors(conn.game);
+                const conceptColor = conceptColors(conn.concept);
+
+                gradient.append("stop")
+                    .attr("offset", "0%")
+                    .attr("stop-color", gameColor)
+                    .attr("stop-opacity", 0.8);
+
+                gradient.append("stop")
+                    .attr("offset", "100%")
+                    .attr("stop-color", conceptColor)
+                    .attr("stop-opacity", 0.8);
+            });
+
+            // Draw vertical connections
+            const connectionPaths = g.selectAll(".chord-ribbon")
+                .data(filteredConnections)
+                .enter().append("path")
+                .attr("class", "chord-ribbon")
+                .attr("d", d => {
+                    const leftPos = leftPositions.find(p => p.name === d.game);
+                    const rightPos = rightPositions.find(p => p.name === d.concept);
+                    
+                    if (!leftPos || !rightPos) return "";
+                    
+                    const x1 = leftPos.x + 75;
+                    const y1 = leftPos.y;
+                    const x2 = rightPos.x - 75;
+                    const y2 = rightPos.y;
+                    
+                    // Create a flowing S-curve with varying control points based on strength
+                    const distance = Math.abs(x2 - x1);
+                    const heightDiff = Math.abs(y2 - y1);
+                    const controlOffset = Math.min(distance * 0.6, 200) + (d.strength / 100) * 50;
+                    
+                    const cp1x = x1 + controlOffset;
+                    const cp1y = y1;
+                    const cp2x = x2 - controlOffset;
+                    const cp2y = y2;
+                    
+                    return `M ${x1},${y1} C ${cp1x},${cp1y} ${cp2x},${cp2y} ${x2},${y2}`;
+                })
+                .style("fill", "none")
+                .style("stroke", (d, i) => `url(#connection-gradient-${i})`)
+                .style("stroke-width", d => Math.max(2, d.strength / 10))
+                .style("opacity", 0.6)
+                .on("mouseover", function(event, d) {
+                    d3.select(this).classed("highlighted", true);
+                    showConnectionInfo(d);
+                    highlightConnection(d);
+                })
+                .on("mouseout", function() {
+                    d3.select(this).classed("highlighted", false);
+                    hideInfo();
+                    resetHighlight();
+                });
+
+            // Draw left nodes (games)
+            const leftNodes_rects = g.selectAll(".left-node")
+                .data(leftPositions)
+                .enter().append("rect")
+                .attr("class", "chord-arc left-node")
+                .attr("x", d => d.x - 75)
+                .attr("y", d => d.y - 15)
+                .attr("width", 150)
+                .attr("height", 30)
+                .attr("rx", 15)
+                .style("fill", d => gameColors(d.name))
+                .style("opacity", 0.8)
+                .on("mouseover", function(event, d) {
+                    highlightNode(d);
+                    showNodeInfo(d);
+                })
+                .on("mouseout", function() {
+                    resetHighlight();
+                    hideInfo();
+                });
+
+            // Draw right nodes (concepts)
+            const rightNodes_rects = g.selectAll(".right-node")
+                .data(rightPositions)
+                .enter().append("rect")
+                .attr("class", "chord-arc right-node")
+                .attr("x", d => d.x - 75)
+                .attr("y", d => d.y - 15)
+                .attr("width", 150)
+                .attr("height", 30)
+                .attr("rx", 15)
+                .style("fill", d => conceptColors(d.name))
+                .style("opacity", 0.8)
+                .on("mouseover", function(event, d) {
+                    highlightNode(d);
+                    showNodeInfo(d);
+                })
+                .on("mouseout", function() {
+                    resetHighlight();
+                    hideInfo();
+                });
+
+            // Add left labels (games)
+            const leftLabels = g.selectAll(".left-label")
+                .data(leftPositions)
+                .enter().append("text")
+                .attr("class", "chord-label game left-label")
+                .attr("x", d => d.x)
+                .attr("y", d => d.y + 5)
+                .attr("text-anchor", "middle")
+                .text(d => d.name)
+                .style("font-size", "14px");
+
+            // Add right labels (concepts)
+            const rightLabels = g.selectAll(".right-label")
+                .data(rightPositions)
+                .enter().append("text")
+                .attr("class", "chord-label concept right-label")
+                .attr("x", d => d.x)
+                .attr("y", d => d.y + 5)
+                .attr("text-anchor", "middle")
+                .text(d => d.name)
+                .style("font-size", "14px");
+        }
+
+        function showConnectionInfo(connectionData) {
+            const gameName = connectionData.game;
+            const conceptName = connectionData.concept;
+            const strength = connectionData.strength;
+            
+            document.getElementById('infoTitle').textContent = `${gameName} → ${conceptName}`;
+            document.getElementById('infoSubtitle').textContent = getConnectionDescription(gameName, conceptName);
+            document.getElementById('infoStrength').textContent = `Strength: ${strength}%`;
+            document.getElementById('infoPanel').classList.add('visible');
+        }
+
+        function showNodeInfo(nodeData) {
+            const nodeName = nodeData.name;
+            const isGame = games.includes(nodeName);
+            const nodeConnections = getNodeConnections(nodeName);
+            
+            document.getElementById('infoTitle').textContent = nodeName;
+            document.getElementById('infoSubtitle').textContent = isGame ? 'Game System' : 'Planetary Concept';
+            document.getElementById('infoStrength').textContent = `Connections: ${nodeConnections.length}`;
+            document.getElementById('infoPanel').classList.add('visible');
+        }
+
+        function hideInfo() {
+            document.getElementById('infoPanel').classList.remove('visible');
+        }
+
+        function getConnectionDescription(source, target) {
+            const conn = filteredConnections.find(c => 
+                (c.game === source && c.concept === target) || 
+                (c.game === target && c.concept === source)
+            );
+            if (!conn) return "Indirect connection";
+            
+            const descriptions = {
+                'Individual Habitat': 'Personal living space design',
+                'Resource Building': 'Material gathering and construction',
+                'Procedural Systems': 'Automated infrastructure generation',
+                'Post-Apocalyptic': 'Civilization rebuilding mechanics',
+                'Modular Ecosystems': 'Interconnected system design',
+                'Atmospheric Control': 'Climate and air management',
+                'Survival Systems': 'Resource scarcity mechanics',
+                'Orbital Physics': 'Gravitational system simulation',
+                'Megastructures': 'Large-scale space engineering',
+                'Closed Ecosystems': 'Self-sustaining environments',
+                'Fleet Management': 'Multi-unit coordination',
+                'Terraforming': 'Planetary transformation processes'
+            };
+            
+            return descriptions[conn.concept] || 'System interaction';
+        }
+
+        function getNodeConnections(nodeName) {
+            return filteredConnections.filter(c => c.game === nodeName || c.concept === nodeName);
+        }
+
+        function highlightConnection(connectionData) {
+            svg.selectAll(".chord-ribbon")
+                .style("opacity", d => 
+                    d.game === connectionData.game && d.concept === connectionData.concept ? 1 : 0.1
+                );
+                
+            svg.selectAll(".chord-arc")
+                .style("opacity", d => 
+                    d.name === connectionData.game || d.name === connectionData.concept ? 1 : 0.3
+                );
+        }
+
+        function highlightNode(nodeData) {
+            const nodeName = nodeData.name;
+            
+            svg.selectAll(".chord-ribbon")
+                .style("opacity", d => 
+                    d.game === nodeName || d.concept === nodeName ? 0.9 : 0.1
+                );
+                
+            svg.selectAll(".chord-arc")
+                .style("opacity", d => d.name === nodeName ? 1 : 0.3);
+        }
+
+        function resetHighlight() {
+            svg.selectAll(".chord-ribbon").style("opacity", 0.6);
+            svg.selectAll(".chord-arc").style("opacity", 0.8);
+        }
+
+        // Auto-rotation demo
+        let demoActive = true;
+        let demoIndex = 0;
+
+        function runDemo() {
+            if (!demoActive) return;
+            
+            const allPositions = [...leftPositions, ...rightPositions];
+            const nodeIndex = demoIndex % allPositions.length;
+            const nodeData = allPositions[nodeIndex];
+            
+            highlightNode(nodeData);
+            showNodeInfo(nodeData);
+            
+            setTimeout(() => {
+                if (demoActive) {
+                    resetHighlight();
+                    hideInfo();
+                    demoIndex++;
+                    setTimeout(runDemo, 800);
+                }
+            }, 2500);
+        }
+
+
+        // Event listeners
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'r' || e.key === 'R') {
+                resetHighlight();
+                hideInfo();
+            }
+        });
+
+
+        // Entrance animation
+        function animateEntrance() {
+            svg.selectAll(".chord-arc")
+                .style("opacity", 0)
+                .transition()
+                .duration(1500)
+                .delay((d, i) => i * 100)
+                .style("opacity", 0.8)
+                .ease(d3.easeCubicOut);
+
+            svg.selectAll(".chord-ribbon")
+                .style("opacity", 0)
+                .transition()
+                .duration(2000)
+                .delay((d, i) => 800 + i * 50)
+                .style("opacity", 0.6)
+                .ease(d3.easeCubicOut);
+
+            svg.selectAll(".chord-label")
+                .style("opacity", 0)
+                .transition()
+                .duration(1000)
+                .delay(1500)
+                .style("opacity", 1);
+        }
+
+        // Initialize
+        function init() {
+            updateDimensions();
+            drawChord();
+            setTimeout(animateEntrance, 300);
+            setTimeout(() => {
+                runDemo();
+            }, 3500);
+        }
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            updateDimensions();
+            drawChord();
+        });
+
+        // Start
+        setTimeout(init, 200);
+    </script>
+</body>
+</html>
