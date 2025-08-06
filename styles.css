@@ -1223,6 +1223,41 @@ color: #4ade80;
     margin-bottom: 0.75rem;
 }
 
+.biomes-slide .manga-quote {
+    color: #ff6b6b;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.cyber-quote {
+    color: #00ffaa;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 5px rgba(0, 255, 170, 0.5);
+}
+
+.megastructure-quote {
+    color: #8a2be2;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+    margin: 0.5rem 0 0 0;
+    text-transform: lowercase;
+    letter-spacing: 1px;
+    font-style: italic;
+}
+
 .biomes-slide .method h4 {
     color: #a5b4fc;
     font-size: 0.95rem;
@@ -3387,6 +3422,197 @@ overflow: hidden;
     }
 }
 
+/* Block'hood Section */
+.blockhood-section {
+    padding: 6rem 0;
+    background: radial-gradient(ellipse at center, #0a0a12 0%, #050508 100%);
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(138, 43, 226, 0.1);
+    border-bottom: 1px solid rgba(138, 43, 226, 0.1);
+}
+
+.blockhood-section .section-header {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.blockhood-section .section-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg, #00ffaa, #00b37a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    text-shadow: 0 0 20px rgba(0, 255, 170, 0.2);
+}
+
+.blockhood-section .section-subtitle {
+    color: #a0a0c0;
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    line-height: 1.6;
+}
+
+/* Block'hood Slider */
+.blockhood-slider-container {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+    background: rgba(10, 5, 20, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(138, 43, 226, 0.2);
+    padding: 1.5rem;
+}
+
+.blockhood-slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.blockhood-slider .slide {
+    min-width: 100%;
+    height: 100%;
+    position: relative;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.blockhood-slider img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background-color: #0a0a12;
+    border-radius: 6px;
+}
+
+.slide-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+    font-size: 1rem;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.slider-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 1rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.slider-nav:hover {
+    background: rgba(0, 255, 170, 0.8);
+    color: #000;
+}
+
+.slider-nav.prev {
+    left: 20px;
+}
+
+.slider-nav.next {
+    right: 20px;
+}
+
+.slider-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    z-index: 10;
+}
+
+.slider-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.slider-dot.active {
+    background: #00ffaa;
+    transform: scale(1.2);
+}
+
+/* Responsive adjustments for slider */
+@media (max-width: 1024px) {
+    .blockhood-slider {
+        height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .blockhood-slider {
+        height: 300px;
+    }
+    
+    .slider-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .slide-caption {
+        font-size: 0.9rem;
+        padding: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .blockhood-slider {
+        height: 250px;
+    }
+    
+    .blockhood-slider-container {
+        padding: 0.5rem;
+    }
+    
+    .slider-nav {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    .slider-dot {
+        width: 10px;
+        height: 10px;
+    }
+}
+
 /* Space Resource Network Visualization */
 .space-resource-visualization {
     padding: 6rem 0;
@@ -3446,6 +3672,110 @@ overflow: hidden;
     height: 100%;
     border: none;
     background: transparent;
+}
+
+/* Emissaries Trilogy Section */
+.emissaries-section {
+    padding: 6rem 0;
+    background: radial-gradient(ellipse at center, #0a0a12 0%, #050508 100%);
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(138, 43, 226, 0.1);
+}
+
+.emissaries-section .section-header {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.emissaries-section .section-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg, #8a2be2, #4b0082);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+.emissaries-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    color: #e5e7eb;
+    line-height: 1.7;
+}
+
+.emissaries-intro {
+    font-size: 1.2rem;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    color: #b8b8d8;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.emissaries-intro em {
+    color: #8a2be2;
+    font-style: italic;
+    font-weight: 500;
+}
+
+.emissaries-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.emissaries-card {
+    background: rgba(15, 15, 30, 0.4);
+    border: 1px solid rgba(138, 43, 226, 0.2);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.emissaries-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
+    border-color: rgba(138, 43, 226, 0.4);
+}
+
+.emissaries-card-title {
+    color: #8a2be2;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.emissaries-card p {
+    color: #d1d5db;
+    margin-bottom: 0;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .emissaries-section {
+        padding: 4rem 0;
+    }
+    
+    .emissaries-section .section-title {
+        font-size: 2rem;
+    }
+    
+    .emissaries-intro {
+        font-size: 1.1rem;
+        padding: 0 1rem;
+    }
+    
+    .emissaries-grid {
+        grid-template-columns: 1fr;
+        padding: 0 1rem;
+    }
 }
 
 /* Responsive adjustments for visualization */
@@ -3510,4 +3840,209 @@ overflow: hidden;
 
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
+}
+
+/* Jane Jacobs Image Hover Effect */
+.jane-jacobs-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 3px solid #8a2be2;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.jane-jacobs-img:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(138, 43, 226, 0.4);
+    border-color: #00ffaa;
+    filter: brightness(1.1);
+}
+
+/* Urbanity Grid Styles */
+.urbanity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.urbanity-image {
+    position: relative;
+    width: 100%;
+    overflow: visible;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    background: rgba(30, 30, 60, 0.3);
+    padding: 10px;
+}
+
+.urbanity-image:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.urbanity-img {
+    width: 100%;
+    max-height: 70vh;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.5s ease;
+    border-radius: 12px 12px 0 0;
+    margin: 0 auto;
+    display: block;
+}
+
+.image-caption {
+    position: relative;
+    background: rgba(17, 25, 40, 0.95);
+    padding: 1.2rem;
+    border-radius: 0 0 12px 12px;
+    backdrop-filter: blur(5px);
+    margin-top: 10px;
+    transform: translateY(0);
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+.urbanity-image:hover .image-caption {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.urbanity-image:hover .image-caption {
+    transform: translateY(0);
+}
+
+.paranoia-quote {
+    color: #ff6b6b;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0 0 0.8rem 0;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.quote-citation {
+    color: #8a2be2;
+    font-size: 0.85rem;
+    text-align: right;
+    margin: 0;
+    font-style: italic;
+}
+
+.urbanity-image:hover .urbanity-img {
+    transform: scale(1.03);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .urbanity-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .urbanity-image {
+        padding-bottom: 66.67%; /* 3:2 aspect ratio for mobile */
+    }
+}
+
+/* Biomes Section */
+.biomes-section {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.biomes-section .section-title {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    color: #e5e7eb;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-bottom: 0.5rem;
+}
+
+.biomes-section .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #8a2be2, transparent);
+}
+
+.biomes-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.biome-card {
+    background: rgba(17, 25, 40, 0.6);
+    padding: 1.8rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.biome-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: rgba(0, 255, 170, 0.3);
+}
+
+.biome-card h3 {
+    color: #8a2be2;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.biome-card p {
+    color: #e5e7eb;
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+.biome-card.highlight {
+    background: rgba(106, 90, 205, 0.15);
+    border-color: rgba(138, 43, 226, 0.3);
+}
+
+.biome-list {
+    list-style: none;
+    padding-left: 1.2rem;
+    margin: 1rem 0;
+}
+
+.biome-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.6rem;
+    color: #e5e7eb;
+}
+
+.biome-list li:before {
+    content: '•';
+    color: #8a2be2;
+    position: absolute;
+    left: 0;
+    font-size: 1.2rem;
+    line-height: 1;
 }

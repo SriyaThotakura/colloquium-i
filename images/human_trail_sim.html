@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Human Trail</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            color: #00ffaa;
+            font-size: 24px;
+            line-height: 1.6;
+            text-shadow: 0 0 10px #00ffaa;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border: 1px solid rgba(0, 255, 170, 0.3);
+            backdrop-filter: blur(5px);
+            max-width: 300px;
+        }
+
+        .signal-info {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            color: #ff6b6b;
+            font-size: 20px;
+            text-align: right;
+            text-shadow: 0 0 8px #ff6b6b;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: transparent;
+        }
+
+        .archive-fragment {
+            position: absolute;
+            color: #4ecdc4;
+            font-size: 20px;
+            opacity: 0;
+            animation: fragmentGlow 5s ease-in-out infinite, fragmentFloat 5s ease-out forwards;
+            text-shadow: 0 0 15px #4ecdc4;
+            pointer-events: auto;
+            cursor: pointer;
+            z-index: 50;
+            white-space: nowrap;
+            transform: translate(-50%, -50%) scale(1);
+            transition: all 0.3s ease-out;
+        }
+        
+        .archive-fragment.clicked {
+            animation: textExpand 2s ease-out forwards !important;
+            pointer-events: none;
+        }
+        
+        @keyframes textExpand {
+            0% { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+                filter: brightness(1.5);
+            }
+            30% {
+                transform: translate(-50%, -50%) scale(3);
+                opacity: 0.9;
+                filter: brightness(2);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(5);
+                opacity: 0;
+                filter: brightness(3);
+            }
+        }
+        
+        @keyframes fragmentFloat {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            10% { transform: translate(-50%, -60%) scale(1.1); opacity: 0.9; }
+            70% { transform: translate(-50%, -120%) scale(1.1); opacity: 0.9; }
+            100% { transform: translate(-50%, -150%) scale(0.9); opacity: 0; }
+        }
+
+        @keyframes fragmentGlow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .data-trail {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: radial-gradient(circle, #00ffaa 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: trailFade 2s ease-out forwards;
+        }
+
+        @keyframes trailFade {
+            0% { opacity: 0.8; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.3); }
+        }
+
+        .loading-bar {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            width: 200px;
+            height: 4px;
+            background: rgba(0, 255, 170, 0.2);
+            border: 1px solid rgba(0, 255, 170, 0.5);
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffaa, #4ecdc4);
+            width: 0%;
+            animation: loadingPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes loadingPulse {
+            0%, 100% { width: 10%; }
+            50% { width: 85%; }
+        }
+
+        .planet-name {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 300;
+            opacity: 0.7;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .ripple {
+            position: absolute;
+            border: 1px solid rgba(0, 255, 170, 0.5);
+            border-radius: 50%;
+            animation: rippleExpand 2s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes rippleExpand {
+            0% { 
+                width: 0px; 
+                height: 0px; 
+                opacity: 1; 
+            }
+            100% { 
+                width: 100px; 
+                height: 100px; 
+                opacity: 0; 
+                transform: translate(-50px, -50px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="planet-name" id="planetName">TITAN</div>
+        
+        <div class="hud">
+            <div>SIGNAL STATUS: ACTIVE</div>
+            <div>LOCATION: <span id="coordinates">N/A</span></div>
+            <div>BIOMIMETIC DRONES: <span id="droneCount">3</span></div>
+            <div>ARCHIVE FRAGMENTS: <span id="fragmentCount">0</span>/127</div>
+            <div>ENVIRONMENTAL SYNC: <span id="syncLevel">72%</span></div>
+            <div style="margin-top: 10px; color: #4ecdc4;">
+                "Every action leaves a data-scape trail..."
+            </div>
+        </div>
+
+        <div class="signal-info">
+            <div>POST-HUMAN CONSCIOUSNESS</div>
+            <div>PROBE ID: HT-2847</div>
+            <div>MISSION: TRAIL RECONSTRUCTION</div>
+            <div style="margin-top: 8px; color: #ffffff; opacity: 0.6;">
+                You are not the center—<br>
+                just one ripple in a new<br>
+                planetary ecology.
+            </div>
+        </div>
+
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+        <div style="position: absolute; bottom: 90px; left: 20px; color: #00ffaa; font-size: 10px;">
+            SYNTHESIZING BIOME DATA...
+        </div>
+
+        <canvas id="terrain"></canvas>
+        <canvas id="pointClouds"></canvas>
+        <canvas id="particles"></canvas>
+    </div>
+
+    <script>
+        // Canvas setup
+        const terrainCanvas = document.getElementById('terrain');
+        const pointCloudCanvas = document.getElementById('pointClouds');
+        const particleCanvas = document.getElementById('particles');
+        
+        const terrainCtx = terrainCanvas.getContext('2d');
+        const pointCtx = pointCloudCanvas.getContext('2d');
+        const particleCtx = particleCanvas.getContext('2d');
+
+        function resizeCanvases() {
+            [terrainCanvas, pointCloudCanvas, particleCanvas].forEach(canvas => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        }
+        resizeCanvases();
+
+        // Game state
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let time = 0;
+        let fragmentsCollected = 0;
+        let droneCount = 3;
+
+        // Point cloud system
+        class PointCloud {
+            constructor() {
+                this.points = [];
+                this.generatePoints();
+            }
+
+            generatePoints() {
+                for (let i = 0; i < 1500; i++) {
+                    this.points.push({
+                        x: Math.random() * window.innerWidth,
+                        y: Math.random() * window.innerHeight,
+                        z: Math.random() * 200 - 100,
+                        originalZ: Math.random() * 200 - 100,
+                        size: Math.random() * 3 + 1,
+                        alpha: Math.random() * 0.8 + 0.2,
+                        color: Math.random() > 0.7 ? '#4ecdc4' : '#00ffaa',
+                        speed: Math.random() * 0.5 + 0.1
+                    });
+                }
+            }
+
+            update() {
+                this.points.forEach(point => {
+                    point.z = point.originalZ + Math.sin(time * 0.001 + point.x * 0.01) * 20;
+                    point.y += point.speed;
+                    
+                    if (point.y > window.innerHeight + 50) {
+                        point.y = -50;
+                        point.x = Math.random() * window.innerWidth;
+                    }
+                });
+            }
+
+            render() {
+                pointCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                
+                this.points.forEach(point => {
+                    const perspective = 200 / (200 + point.z);
+                    const x = point.x * perspective;
+                    const y = point.y * perspective;
+                    const size = point.size * perspective;
+                    
+                    pointCtx.globalAlpha = point.alpha * perspective;
+                    pointCtx.fillStyle = point.color;
+                    pointCtx.shadowBlur = 10;
+                    pointCtx.shadowColor = point.color;
+                    
+                    pointCtx.beginPath();
+                    pointCtx.arc(x, y, size, 0, Math.PI * 2);
+                    pointCtx.fill();
+                });
+            }
+        }
+
+        // Terrain system with glacial cyber-archive aesthetic
+        class TerrainSystem {
+            constructor() {
+                this.nodes = [];
+                this.generateTerrain();
+            }
+
+            generateTerrain() {
+                for (let i = 0; i < 150; i++) {
+                    this.nodes.push({
+                        x: Math.random() * window.innerWidth,
+                        y: Math.random() * window.innerHeight,
+                        connections: [],
+                        pulsePhase: Math.random() * Math.PI * 2,
+                        type: Math.random() > 0.8 ? 'archive' : 'node'
+                    });
+                }
+
+                // Create connections
+                this.nodes.forEach((node, i) => {
+                    this.nodes.forEach((other, j) => {
+                        if (i !== j) {
+                            const dist = Math.sqrt((node.x - other.x) ** 2 + (node.y - other.y) ** 2);
+                            if (dist < 250 && Math.random() > 0.5) {
+                                node.connections.push(j);
+                            }
+                        }
+                    });
+                });
+            }
+
+            render() {
+                terrainCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                
+                // Draw connections
+                this.nodes.forEach((node, i) => {
+                    node.connections.forEach(connectionIndex => {
+                        const other = this.nodes[connectionIndex];
+                        const alpha = 0.2 + Math.sin(time * 0.002 + node.pulsePhase) * 0.1;
+                        
+                        terrainCtx.globalAlpha = alpha;
+                        terrainCtx.strokeStyle = '#00ffaa';
+                        terrainCtx.lineWidth = 1;
+                        terrainCtx.beginPath();
+                        terrainCtx.moveTo(node.x, node.y);
+                        terrainCtx.lineTo(other.x, other.y);
+                        terrainCtx.stroke();
+                    });
+                });
+
+                // Draw nodes
+                this.nodes.forEach(node => {
+                    const pulse = 0.5 + Math.sin(time * 0.003 + node.pulsePhase) * 0.3;
+                    const size = node.type === 'archive' ? 12 : 6;
+                    const color = node.type === 'archive' ? '#4ecdc4' : '#00ffaa';
+                    
+                    terrainCtx.globalAlpha = pulse;
+                    terrainCtx.fillStyle = color;
+                    terrainCtx.shadowBlur = 15;
+                    terrainCtx.shadowColor = color;
+                    
+                    terrainCtx.beginPath();
+                    terrainCtx.arc(node.x, node.y, size, 0, Math.PI * 2);
+                    terrainCtx.fill();
+                });
+            }
+        }
+
+        // Particle system for environmental effects
+        class ParticleSystem {
+            constructor() {
+                this.particles = [];
+            }
+
+            addParticle(x, y, type = 'trail') {
+                this.particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    life: 1.0,
+                    decay: 0.02,
+                    size: type === 'trail' ? 2 : 4,
+                    color: type === 'trail' ? '#00ffaa' : '#4ecdc4',
+                    type: type
+                });
+            }
+
+            update() {
+                this.particles = this.particles.filter(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.life -= particle.decay;
+                    return particle.life > 0;
+                });
+            }
+
+            render() {
+                particleCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                
+                this.particles.forEach(particle => {
+                    particleCtx.globalAlpha = particle.life;
+                    particleCtx.fillStyle = particle.color;
+                    particleCtx.shadowBlur = 15;
+                    particleCtx.shadowColor = particle.color;
+                    
+                    particleCtx.beginPath();
+                    particleCtx.arc(particle.x, particle.y, particle.size * particle.life, 0, Math.PI * 2);
+                    particleCtx.fill();
+                });
+            }
+        }
+
+        // Initialize systems
+        const pointCloud = new PointCloud();
+        const terrain = new TerrainSystem();
+        const particles = new ParticleSystem();
+
+        // Mouse interaction
+        let lastMouseX = mouseX;
+        let lastMouseY = mouseY;
+
+        document.addEventListener('mousemove', (e) => {
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Update coordinates
+            document.getElementById('coordinates').textContent = 
+                `${Math.floor(mouseX / 10)}.${Math.floor(mouseY / 10)}`;
+            
+            // Add trail particles
+            particles.addParticle(mouseX, mouseY, 'trail');
+            
+            // Create ripple effect
+            if (Math.random() > 0.95) {
+                createRipple(mouseX, mouseY);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            // Collect archive fragment
+            if (Math.random() > 0.7) {
+                fragmentsCollected++;
+                document.getElementById('fragmentCount').textContent = fragmentsCollected;
+                createArchiveFragment(e.clientX, e.clientY);
+                particles.addParticle(e.clientX, e.clientY, 'collect');
+            }
+            
+            // Create larger ripple on click
+            createRipple(e.clientX, e.clientY);
+        });
+
+        function createRipple(x, y) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            document.body.appendChild(ripple);
+            
+            setTimeout(() => {
+                document.body.removeChild(ripple);
+            }, 2000);
+        }
+
+        function createArchiveFragment(x, y) {
+            const fragment = document.createElement('div');
+            fragment.className = 'archive-fragment';
+            
+            // Random archive-like text
+            const texts = [
+                '01001000 01101001',
+                '01110011 01101001 01100111 01101110 01100001 01101100 00100000 01101100 01101111 01110011 01110100',
+                '01000110 01010010 01000001 01000111 01001101 01000101 01001110 01010100 00100000 00110011 00110101 00111000',
+                '01010100 01110010 01100001 01101001 01101100 00100000 01100100 01100001 01110100 01100001 00100000 01100100 01100101 01110100 01100101 01100011 01110100 01100101 01100100',
+                '01000010 01101001 01101111 01101101 01101001 01101101 01100101 01110100 01110010 01111001 00100000 01110011 01111001 01101110 01100011 00111010 00100000 00111001 00110010 00100101'
+            ];
+            fragment.textContent = texts[Math.floor(Math.random() * texts.length)];
+            
+            fragment.style.left = `${x}px`;
+            fragment.style.top = `${y}px`;
+            
+            // Random animation duration and delay
+            const duration = 4 + Math.random() * 3;
+            fragment.style.animationDuration = `${duration}s`;
+            fragment.style.animationDelay = `${Math.random() * 2}s`;
+            
+            // Add click handler
+            fragment.addEventListener('click', function() {
+                this.classList.add('clicked');
+                // Remove after animation completes
+                setTimeout(() => {
+                    this.remove();
+                }, 2000); // Match this with textExpand animation duration
+            });
+            
+            document.body.appendChild(fragment);
+            
+            // Auto-remove after a while if not clicked
+            setTimeout(() => {
+                if (document.body.contains(fragment) && !fragment.classList.contains('clicked')) {
+                    fragment.remove();
+                }
+            }, (duration + 2) * 1000);
+        }
+
+        // Update planet names and environmental sync
+        const planets = ['TITAN', 'EUROPA', 'MARS', 'ENCELADUS'];
+        let currentPlanet = 0;
+
+        setInterval(() => {
+            currentPlanet = (currentPlanet + 1) % planets.length;
+            document.getElementById('planetName').textContent = planets[currentPlanet];
+            
+            // Update sync level
+            const syncLevel = Math.floor(60 + Math.random() * 30);
+            document.getElementById('syncLevel').textContent = syncLevel + '%';
+            
+            // Occasionally update drone count
+            if (Math.random() > 0.8) {
+                droneCount = Math.floor(Math.random() * 3) + 2;
+                document.getElementById('droneCount').textContent = droneCount;
+            }
+        }, 8000);
+
+        // Main animation loop
+        function animate() {
+            time = Date.now();
+            
+            pointCloud.update();
+            pointCloud.render();
+            
+            terrain.render();
+            
+            particles.update();
+            particles.render();
+            
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            resizeCanvases();
+            terrain.generateTerrain();
+            pointCloud.generatePoints();
+        });
+
+        // Ambient archive fragment generation
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                createArchiveFragment(x, y);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
